@@ -62,7 +62,7 @@ function MyPage() {
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={3}>아이디</Form.Label>
                 <Col sm={5}>
-                  <Form.Control type="text" value={userInfo.id} readOnly />
+                  <Form.Control type="text" value={userInfo.userId} readOnly />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">
@@ -87,7 +87,7 @@ function MyPage() {
           </Col>
         </Row>
       </Container>
-      {/* {user && <DeleteAccount userId={user.userId}/>} */}
+      {user && <DeleteAccount userId={user.userId}/>}
     </div>
   </div>
   );
