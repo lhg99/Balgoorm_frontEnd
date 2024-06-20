@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+* {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* height 수정 */
+html, body, #root, .App {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  display: flex;
+  width: 100%;
+}
+
+.sidebar {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  width: 250px;
+  padding: 10px;
+  height: 100%;
+  box-shadow: 3px 0 10px -2px rgba(0, 0, 0, 0.5);
+}
+
+.main {
+  margin-left: 250px;
+  width: 90%;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+  height: 50px;
+
+  border-bottom: 1px solid #c0c0c0;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  height: calc(100% - 50px);
+}
+
+.logo-img {
+  width: 18.75rem;
+}
+
+.logo-text {
+  color: #3498db;
+}
+
+.error-message {
+  color: red;
+  margin-top: 0.625rem;
+}

@@ -1,0 +1,13 @@
+.column {
+    width: 110px;
+}
+
+.column-email {
+    width: 250px;
+}
+
+/* 유저 데이터가 나오는 부분 스타일링 */
+.column-user {
+    vertical-align: middle;
+    height: 10px;
+}

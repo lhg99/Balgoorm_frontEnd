@@ -1,0 +1,8 @@
+.main-content {
+    padding: 20px; /* 내부 패딩 */
+    background-color: #fff; /* 흰색 배경 */
+}
+
+.Row {
+    display: flex;
+}
