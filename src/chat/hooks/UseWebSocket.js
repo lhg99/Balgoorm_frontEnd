@@ -1,13 +1,15 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useMessage } from '../MessageProvider.js';
 import { Stomp } from '@stomp/stompjs';
 import axios from 'axios';
+import { useAuth } from '../../user/auth/AuthContext.js';
 
 function UseWebSocket() {
-  const { addMessage, setInputValue } = useMessage();
+  const { addMessage, InputValue, setInputValue } = useMessage();
+  const { user } = useAuth();
   const stompClient = useRef(null);
 
-  const connect = () => {
+  const connect = useCallback(() => {
     const socket = new WebSocket("ws://localhost:8080/chat");
     stompClient.current = Stomp.over(socket);
     stompClient.current.connect({}, () => {
@@ -18,45 +20,64 @@ function UseWebSocket() {
     }, (error) => {
       console.error('Connection error: ', error);
     });
-  };
+  }, [addMessage]);
 
-  const disconnect = () => {
+  const joinChatRoom = useCallback(() => {
+    if(stompClient.current && user && user?.nickname) {
+      const chatRequest = { senderName: user?.nickname, chatBody: '입장하였습니다.'};
+      stompClient.current.send("app/join", {}, JSON.stringify(chatRequest))
+    }
+  }, [user]);
+
+  const disconnect = useCallback(() => {
     if (stompClient.current) {
       stompClient.current.disconnect();
       console.log("Disconnected");
     }
-  };
+  }, []);
 
-  const sendMessage = (nickname, message) => {
-    if (stompClient.current && message.trim() !== '') {
-      stompClient.current.send("/pub/chat", {}, JSON.stringify({ nickname, message }));
-      
-      const newMessage = {
-        id: Date.now(),
-        nickname,
-        message
+  const sendMessage = (inputValue) => {
+    if (stompClient.current && inputValue.trim() !== '') {
+      const senderName = user.nickname;
+      const chatTime = new Date().toISOString();      
+
+      const chatMessage = {
+        senderName,
+        chatBody: InputValue,
+        chatTime,
+        currentUser: true
       };
-      addMessage(newMessage);
+
+      stompClient.current.send("/pub/chat", {}, JSON.stringify(chatMessage));
+      
+      addMessage(chatMessage);
       setInputValue('');
     }
   };
 
-  const fetchMessage = async () => {
-    return await axios.get('http://localhost:8080/chat/1')
-    .then(response => {
-      addMessage(response.data);
-    });
-  };
+  const fetchChatHistory = useCallback(async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/history');
+      const chatHistory = response.data;
+      chatHistory.forEach(message => addMessage(message))
+    } catch (error) {
+      console.error('failed to fetch chat history', error);
+    }  
+  }, [addMessage]);
 
   // 연결을 생성하고 해제하는 로직
   useEffect(() => {
-    connect();
+    if(user && user.nickname) {
+      fetchChatHistory();
+      connect();
+      joinChatRoom();
+    }
     return () => {
       disconnect();
     };
-  }, []);
+  }, [user, connect, fetchChatHistory, joinChatRoom, disconnect]);
 
-  return { sendMessage, fetchMessage };
+  return { sendMessage };
 }
 
 export default UseWebSocket;

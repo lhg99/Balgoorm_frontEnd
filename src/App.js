@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useRef } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/sidebar/Sidebar.js';
 import Navbar from './components/navbar/Navbar.js';
@@ -21,7 +21,7 @@ import DeleteAccount from './user/DeleteAccount.js';
 
 function App() {
 
-  const { sendMessage, fetchMessage } = UseWebSocket();
+  const { sendMessage } = UseWebSocket();
 
   return (
     <AuthProvider>
@@ -36,9 +36,9 @@ function App() {
                   <Route path="/" />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
-                  <Route path="/mypage" element={<MyPage />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/delete" element={<DeleteAccount />} />
+                  <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+                  <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+                  <Route path="/delete" element={<ProtectedRoute><DeleteAccount /></ProtectedRoute>} />
                   {/* 기존 경로들 추가 */}
                   {/* <Route path="/main" element={<MainPage />} /> */}
                   {/* <Route path="/editor" element={<EditorPage />} />
@@ -47,7 +47,7 @@ function App() {
                   <Route path="/editortest" element={<TestEditorPage />} />
                   <Route path="/quizlist" element={<QuizList />} />
                   <Route path="/quiz/detail/:id" element={<EditorPage />} />
-                  <Route path="/chat" element={<Chat sendMessage={sendMessage} fetchMessage={fetchMessage}/>} />
+                  <Route path="/chat" element={<Chat sendMessage={sendMessage}/>} />
                 </Routes>
               </div>
             </div>

@@ -17,29 +17,18 @@ import './Login.css';
 
 function Login() {
     const { register, handleSubmit, formState: {errors} } = useForm();
+    const { login } = useAuth();
     const navigate = useNavigate();
-    const { setAuthToken, setUserRole } = useAuth();
 
     const submitForm = async (data) => {
       console.log(data);
       const { userId, password }  = data;
 
-      try {
-        const response = await axios.post('http://localhost:8080/login', data);
-        const { token, role } = response.data;
+      const navigateCallback = (role) => {
+        role === "ADMIN"? navigate('/admin') : navigate('/mypage');
+      };
+      login(data, navigateCallback);
 
-        setAuthToken(token);
-        setUserRole(role);
-        role === "ADMIN" ? navigate('/admin') : navigate('/mypage');
-      }
-      catch(error) {
-        if(error.response) {
-          alert(error.response.data);
-        } else {
-          alert("로그인 실패");
-        }
-        
-      }  
     }
     
     return (
@@ -52,15 +41,15 @@ function Login() {
         
         <Form onSubmit={handleSubmit(submitForm)} className="login-form w-100">
           <Form.Group>
-            <Form.Label htmlFor='id'>아이디</Form.Label>
+            <Form.Label htmlFor='userId'>아이디</Form.Label>
             <Form.Control 
             id="id" 
             type="text" 
             placeholder="id 입력" 
             aria-label='아이디'
-            {...register("id", {required: "아이디를 입력해주세요"})} />
+            {...register("userId", {required: "아이디를 입력해주세요"})} />
           </Form.Group>
-          {errors.id && <div className='error-message'>{errors.id.message}</div>}
+          {errors.userId && <div className='error-message'>{errors.userId.message}</div>}
           <br />
           
           <Form.Group>

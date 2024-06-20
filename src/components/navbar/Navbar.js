@@ -7,8 +7,10 @@ import { Logout } from '../../img/LogoutImg';
 import { Login } from '../../img/LoginImg';
 import { Mypage } from '../../img/MyPageImg';
 import { Home } from '../../img/HomeImg';
+import { useAuth } from '../../user/auth/AuthContext';
 
 function Navbar() {
+  const { logout } = useAuth();
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,13 +18,8 @@ function Navbar() {
   const isMypage = location.pathname === '/mypage';
 
   const handleLogout = async () => {
-    try {
-      await axios.post('http://localhost:8080/logout');
-      localStorage.removeItem('token');
-      navigate('/login')
-    } catch (error) {
-      console.error('로그아웃 실패', error); 
-    }
+    await logout();
+    navigate('/login');
   }
 
   return (

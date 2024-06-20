@@ -10,17 +10,18 @@ import { Button, Container, Form } from 'react-bootstrap';
 import { useMessage } from './MessageProvider';
 import './Chat.css'
 
-function Chat({sendMessage, fetchMessage}) {
+function Chat({sendMessage}) {
   const { message, addMessage, handleKeyDown, inputValue, setInputValue} = useMessage();
 
   const ssssendMessage = useCallback(() => {
     if (inputValue.trim() !== '') {
       // 임시로 로컬 메시지 객체 생성
       const newMessage = {
-        id: Date.now(), // 임시 ID
-        nickname: 'lee99', // 고정 닉네임
-        message: inputValue,
-        currentUser: true // 현재 사용자로 설정
+        chatId: Date.now(),
+        senderName: 'lee99',
+        chatBody: inputValue,
+        chatTime: new Date().toISOString(),
+        currentUser: true
       };
       addMessage(newMessage); // 메시지 리스트에 추가
       setInputValue(''); // 입력 필드 초기화
@@ -31,16 +32,16 @@ function Chat({sendMessage, fetchMessage}) {
   <div>
     <Container className='chatting-container'>
       {message.map((msg) => (
-        <div className={`message-box ${msg.currentUser ? 'right' : 'left'}`} key={msg.id}>
+        <div className={`message-box ${msg.currentUser ? 'right' : 'left'}`} key={msg.chatId}>
           {msg.currentUser ? (
             <>
-              <div className='message-content'>{msg.message}</div>
-              <span className='user-badge'>{msg.nickname}</span>
+              <div className='message-content'>{msg.chatBody}</div>
+              <span className='user-badge'>{msg.senderName}</span>
             </>
           ) : (
             <>
-              <span className='user-badge'>{msg.nickname}</span>
-              <div className='message-content'>{msg.message}</div>
+              <span className='user-badge'>{msg.senderName}</span>
+              <div className='message-content'>{msg.chatBody}</div>
             </>
           )}
         </div>
@@ -56,7 +57,6 @@ function Chat({sendMessage, fetchMessage}) {
           />
           </Form.Group>
           <Button variant="primary" className='button-inline' onClick={ssssendMessage}>전송</Button>
-          <Button variant="secondary" className='button-inline' onClick={fetchMessage}>새로 고침</Button>
       </Form>
     </Container> 
   </div>

@@ -46,8 +46,8 @@ function Sidebar() {
               </div>
               <div className='chat-message-div'>
                 {message.map(chat => (
-                  <div key={chat.id} className='chat-message'>
-                    <strong>{chat.nickname}</strong>: {chat.message}
+                  <div key={chat.chatId} className='chat-message'>
+                    <strong>{chat.senderName}</strong>: {chat.chatBody}
                   </div>
                 ))}
               </div>

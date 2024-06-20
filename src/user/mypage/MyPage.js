@@ -10,43 +10,28 @@ import { Col, Container, Form, Row } from 'react-bootstrap';
 import logo1 from '../../img/Logo1.png';
 import './MyPage.css';
 import { useAuth } from '../auth/AuthContext.js';
-import DeleteAccount from '../DeleteAccount.js';
 
 function MyPage() {
   const [userInfo, setUserInfo] = useState({userId:'', nickname:'', email:'', password:''});
-  const {user} = useAuth();
+  const {user, fetchUserInfo} = useAuth();
 
   useEffect(() => {
-    // 사용자 정보를 가져옴
-    const fetchUserInfo = async () => {
-      // try {
-      //   const response = await axios.get('http://localhost:8080/users');
-      //   setUserInfo({
-      //     userId: response.data.userId,
-      //     nickname: response.data.nickname,
-      //     email: response.data.email,
-      //     password: response.data.password
-      //   });
-      // }
-      // catch(error) {
-      //   alert(error.response.data);
-      // }
-      
-      // 테스트용 유저정보
-      setUserInfo({
-        userId: 'lee99',
-        nickname: 'lhg99',
-        email: 'lee991229@naver.com',
-        password: '123123'
-      })
-    };
+    if(!user) {
+      fetchUserInfo();
+    }
 
-    fetchUserInfo();
-  }, []);
-  
+    // 테스트용 유저정보
+    // setUserInfo({
+    //   userId: 'lee99',
+    //   nickname: 'lhg99',
+    //   email: 'lee991229@naver.com',
+    //   password: '123123'
+    // });
+
+  }, [user, fetchUserInfo]);
+
   return (
   <div>
-    
     <div className='d-flex'>
       <Container className='flex-grow-1'>
         <div className="text-center mb-4 mt-4">
@@ -62,7 +47,7 @@ function MyPage() {
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={3}>아이디</Form.Label>
                 <Col sm={5}>
-                  <Form.Control type="text" value={userInfo.userId} readOnly />
+                  <Form.Control type="text" value={user.userId} readOnly />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">
@@ -74,20 +59,19 @@ function MyPage() {
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={3}>닉네임</Form.Label>
                 <Col sm={5}>
-                  <Form.Control type="text" value={userInfo.nickname} readOnly />
+                  <Form.Control type="text" value={user.nickname} readOnly />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={3}>이메일</Form.Label>
                 <Col sm={5}>
-                  <Form.Control type="text" value={userInfo.email} readOnly />
+                  <Form.Control type="text" value={user.email} readOnly />
                 </Col>
               </Form.Group>
             </Form>
           </Col>
         </Row>
       </Container>
-      {user && <DeleteAccount userId={user.userId}/>}
     </div>
   </div>
   );

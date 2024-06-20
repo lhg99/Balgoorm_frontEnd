@@ -14,21 +14,20 @@ function Signup() {
   const { register, watch, handleSubmit, formState: {errors} } = useForm();
 
   const submitForm = async (data) => {
-    console.log(data);
-    const { userId, nickname, email, password } = data;
+    const {userId, nickname, email, password} = data;
+    const postData = { userId, nickname, email, password };
 
     // api 호출 로직
     try {
-      const response = await axios.post('localhost:8080/signup', data);
-          }
-          catch(error) {
-            if(error.response) {
-              alert(error.response.data);
-            } else {
-              alert("회원가입 실패")
-            }
-            
-          }
+      const response = await axios.post('http://localhost:8080/signup', postData);
+      console.log(response.data);
+    } catch(error) {
+      if(error.response) {
+        alert(error.response.data);
+      } else {
+        alert("회원가입 실패")
+        }
+    }
   }
   
   return (
@@ -42,16 +41,15 @@ function Signup() {
       <Form onSubmit={handleSubmit(submitForm)} className="w-100 signup-form" >
         <Form.Group>
           <Form.Label>아이디</Form.Label>
-          <Form.Control type="text" placeholder="id 입력" {...register("id", {required: "아이디를 입력해주세요"})} />
+          <Form.Control type="text" placeholder="id 입력" {...register("userId", {required: "아이디를 입력해주세요"})} />
         </Form.Group>
-        {errors.id && <div className='error-message'>{errors.id.message}</div>}
+        {errors.userId && <div className='error-message'>{errors.userId.message}</div>}
         <br />
         
         <Form.Group>
           <Form.Label>닉네임</Form.Label>
           <Form.Control type="text" placeholder="닉네임 입력" 
-          {...register("nickname", 
-          {required: "닉네임을 입력해주세요."})} />
+          {...register("nickname", {required: "닉네임을 입력해주세요."})} />
         </Form.Group>
         {errors.nickname && <div className="error-message">{errors.nickname.message}</div>}
         <br />
@@ -79,9 +77,9 @@ function Signup() {
         <Form.Group controlId="password">
           <Form.Label>비밀번호 확인</Form.Label>
           <Form.Control type="password" placeholder="비밀번호 확인" {
-            ...register("password", {
-              required: "비밀번호를 입력해주세요.", validate: (value) => 
-                watch().password !== value ? '비밀번호가 일치하지 않습니다' : true,
+            ...register("passwordConfirm", {
+              required: "비밀번호를 입력해주세요.", 
+              validate: (value) => watch('password') === value || '비밀번호가 일치하지 않습니다',
               })}/>
         </Form.Group>
 
