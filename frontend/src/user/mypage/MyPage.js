@@ -10,10 +10,10 @@ import { Col, Container, Form, Row } from 'react-bootstrap';
 import logo1 from '../../img/Logo1.png';
 import './MyPage.css';
 import { useAuth } from '../auth/AuthContext.js';
-import Delete from '../DeleteAccount.js';
+import DeleteAccount from '../DeleteAccount.js';
 
 function MyPage() {
-  const [userInfo, setUserInfo] = useState({id:'', nickname:'', email:'', password:''});
+  const [userInfo, setUserInfo] = useState({userId:'', nickname:'', email:'', password:''});
   const {user} = useAuth();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ function MyPage() {
       // try {
       //   const response = await axios.get('http://localhost:8080/users');
       //   setUserInfo({
-      //     id: response.data.id,
+      //     userId: response.data.userId,
       //     nickname: response.data.nickname,
       //     email: response.data.email,
       //     password: response.data.password
@@ -34,7 +34,7 @@ function MyPage() {
       
       // 테스트용 유저정보
       setUserInfo({
-        id: 'lee99',
+        userId: 'lee99',
         nickname: 'lhg99',
         email: 'lee991229@naver.com',
         password: '123123'
@@ -87,7 +87,7 @@ function MyPage() {
           </Col>
         </Row>
       </Container>
-      {user && <Delete userId={user.id}/>}
+      {/* {user && <DeleteAccount userId={user.userId}/>} */}
     </div>
   </div>
   );

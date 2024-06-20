@@ -12,9 +12,9 @@ import './Admin.css';
 
 function Admin() {
   const initialUsers = [
-    { id: "lee99", nickname: "alice", email: "alice@example.com", create_date: "2024-06-14 10:00 AM"},
-    { id: "lhg12", nickname: "Bob", email: "bob@example.com", create_date: "2024-06-10 02:00 PM" },
-    { id: "lee29", nickname: "Charlie", email: "charlie@example.com", create_date: "2024-06-09 04:00 AM" }
+    { userId: "lee99", nickname: "alice", email: "alice@example.com", create_date: "2024-06-14 10:00 AM"},
+    { userId: "lhg12", nickname: "Bob", email: "bob@example.com", create_date: "2024-06-10 02:00 PM" },
+    { userId: "lee29", nickname: "Charlie", email: "charlie@example.com", create_date: "2024-06-09 04:00 AM" }
   ]
 
   const [users, setUsers] = useState(initialUsers);
@@ -91,7 +91,7 @@ function Admin() {
               {users.map((user, index) => (
                 <tr key={user.id}>
                   <td className='column-user'>{index + 1}</td>
-                  <td className='column-user'>{user.id}</td>
+                  <td className='column-user'>{user.userId}</td>
                   <td className='column-user'>{user.nickname}</td>
                   <td className='column-user'>{user.email}</td>
                   <td className='column-user'>{user.create_date}</td>
