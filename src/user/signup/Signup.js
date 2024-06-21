@@ -8,29 +8,18 @@ import { useForm } from "react-hook-form";
 import { Button, Container, Form } from "react-bootstrap";
 import logo1 from "../../img/Logo1.png";
 import './Signup.css'
+import { useAuth } from "../auth/AuthContext";
 
 function Signup() {
 
   const { register, watch, handleSubmit, formState: {errors} } = useForm();
+  const { signup } = useAuth();
 
   const submitForm = async (data) => {
-    const {userId, nickname, email, password} = data;
-    const postData = { userId, nickname, email, password };
-
-    if(userId === 'admin') {
-      
-    }
-
-    // api 호출 로직
     try {
-      const response = await axios.post('http://localhost:8080/api/signup', postData);
-      console.log(response.data);
-    } catch(error) {
-      if(error.response) {
-        alert(error.response.data);
-      } else {
-        alert("회원가입 실패")
-        }
+      await signup(data);
+    } catch (error) {
+      console.error("error:", error);
     }
   }
   

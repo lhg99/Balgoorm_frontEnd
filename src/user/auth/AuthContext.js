@@ -5,45 +5,67 @@ import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext({
     user: null,
+    signup: () => {},
     login: () => {},
     logout: () => {},
     setAuthToken: () => {},
     setUserRole: () => {},
-    fetchUserInfo: () => {},
-    isLoading: true,
+    loadUserInfo: () => {},
+    fetchAllUsers: () => {},
+    fetchCount: () => {}
 });
+
+export function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
 
 export function useAuth() {
     return useContext(AuthContext);
 }
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null); // userId와 role 저장
+    const [user, setUser] = useState(null); // 현재 유저의 정보 가져오기
     const [isLoading, setIsLoading] = useState(true); // 로딩여부
-    const [users, setUsers] = useState([]); // 유저 정보
+    const [allUsers, setAllUsers] = useState([]); // 모든 유저들의 정보 가져오는 변수
     const [userCount, setUserCount] = useState(0); // 총 유저 수
     const [fetchedUser, setFetchedUser] = useState(null); // 패치한 유저 가져오기
 
     const setAuthToken = (token) => {
-        Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict'});
+        Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict' });
     }
 
     const setUserRole = (role) => {
-        Cookies.set('role', role, { expires: 7, secure: true, sameSite: 'Strict'});
+        Cookies.set('role', role, { expires: 7, secure: true, sameSite: 'Strict' });
     }
-
-    // 로그인 로직, 토큰, 쿠키 설정
+    
+    const signup = async (postData) => {
+    try {
+        const response = await axios.post('http://localhost:8080/api/signup', postData, {
+            withCredentials: true
+        });
+        console.log("회원가입 성공!", response);
+        setUser(response.data);
+        return response.data;
+    } catch (error) {
+        console.error('signup error: ', error)
+        throw error.response ? error.response.data : "회원가입 실패";
+    }};
+    
     const login = async (userData, navigateCallback) => {
         setIsLoading(true);
         try {
-            console.log('logging information', userData);
             const response = await axios.post("http://localhost:8080/api/login", userData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
-            }, withCredentials: true});
-            
-            console.log("response: ", response);
-            console.log("response.data :", response.data);
+                }, withCredentials: true}
+            );
             const { token, role } = response.data;
             setAuthToken(token);
             setUserRole(role);
@@ -55,8 +77,7 @@ export const AuthProvider = ({ children }) => {
             setIsLoading(false);
         }
     }
-
-    // 로그아웃 로직, 토큰, 쿠키 삭제
+    
     const logout = async (navigate) => {
         setIsLoading(true);
         try {
@@ -64,6 +85,7 @@ export const AuthProvider = ({ children }) => {
             Cookies.remove('token');
             Cookies.remove('role');
             setUser(null);
+            setFetchedUser(null);
             navigate('/login');
         } catch (error) {
             console.error('로그아웃 실패', error);
@@ -76,9 +98,8 @@ export const AuthProvider = ({ children }) => {
             setIsLoading(false);
         }
     }
-
-    // 유저 정보 가져오기
-    const fetchUserInfo = async () => {
+    
+    const loadUserInfo = async () => {
         const token = Cookies.get('token');
         if (!token) {
             setIsLoading(false);
@@ -94,41 +115,54 @@ export const AuthProvider = ({ children }) => {
                 nickname: response.data.nickname,
                 email: response.data.email,
                 createDate: response.data.createDate,
-                role: Cookies.get('role')
+                role: response.data.role
             });
+            console.log("response info: ", response);
         } catch (error) {
             console.error('Failed to fetch user data:', error);
         } finally {
             setIsLoading(false);
         }
-    };
+    }
 
     // 모든 유저 정보 가져오기
-    const fetchUsers = useCallback(async() => {
+    const fetchAllUsers = async() => {
         try {
-          const response = await axios.get('http://localhost:8080/api/admin/all');
-          setUsers(response.data);
+            const response = await axios.get('http://localhost:8080/api/admin/all', {
+                withCredentials: true
+        });
+        const formattedUsers = response.data.map(user => ({
+            ...user,
+            createDate: formatDate(user.createDate) // 날짜 포맷팅
+        }));
+        setAllUsers(formattedUsers);
         } catch (error) {
-          console.error("error", error);
+        console.error("모든 유저 정보 가져오기 실패: ", error);
         }
-      }, []);
+    }
 
-      // 총 유저 수 가져오기
-      const fetchCount = useCallback(async () => {
+    const fetchCount = async () => {
         try {
-          const response = await axios.get('http://localhost:8080/api/admin/totalUsers');
-          setUserCount(response.data.count); // count: num 형태로 저장되있을 때
+            const response = await axios.get('http://localhost:8080/api/admin/totalUsers', {
+                withCredentials: true
+        });
+        setUserCount(response.data.totalUsers);
+        console.log("user count: ", response.data.totalUsers);
         } catch (error) {
-          console.error('총 회원수 가져오기 실패', error);
+        console.error('총 회원수 가져오기 실패', error);
         }
-      }, []);
+    }
 
     useEffect(() => {
-        fetchUserInfo();
-    }, []);
+        loadUserInfo();
+      }, []
+    );
     
-    const value = { user, users, setUsers, login, logout, isLoading, fetchUserInfo, fetchUsers, fetchCount, setFetchedUser };
-
+    const value = { 
+        user, allUsers, setAllUsers, userCount, signup, login, logout, isLoading, 
+        loadUserInfo, fetchAllUsers, fetchCount, fetchedUser 
+    };
+    
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

@@ -20,7 +20,6 @@ function Login() {
     const navigate = useNavigate();
 
     const submitForm = async (data) => {
-      console.log('submitted data: ', data);
       const { userId, userPassword }  = data;
 
       const navigateCallback = (role) => {

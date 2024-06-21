@@ -1,27 +1,28 @@
 /**
  * 관리자 페이지
  * 오늘 가입자 수
- * 확인되면 initialUsers 지우기
  */
 
 import React, { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
-import axios from 'axios';
 import UserEditModal from './UserEditModal.js';
 import './Admin.css';
-import { useAuth } from '../auth/AuthContext.js';
+import { formatDate, useAuth } from '../auth/AuthContext.js';
 
 function Admin() {
   const [showModal, setShowModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const { users, setUsers, userCount, fetchUsers, fetchCount } = useAuth();
+  const { allUsers, setAllUsers, userCount, fetchAllUsers, fetchCount, isLoading } = useAuth();
 
   useEffect(() => {
-    fetchUsers();
+    fetchAllUsers();
     fetchCount();
-  }, [fetchUsers, fetchCount]);
-  
+  }, [fetchAllUsers, fetchCount]);
 
+  if(isLoading) {
+    return <div>Loading...</div>;
+  }
+  
   const handleEdit = (user) => {
     setCurrentUser(user);
     setShowModal(true);
@@ -29,17 +30,18 @@ function Admin() {
 
   const handleSave = (updateUser) => {
     // 수정한 닉네임, 이메일 반영
-    const updateUsers = users.map(user => {
+    const updateUsers = allUsers.map(user => {
       if(user.id === updateUser.id) {
         return { 
           ...user, 
           nickname: updateUser.nickname, 
           email: updateUser.email, 
+          createDate: formatDate(updateUser.createDate)
         };
       }
       return user;
     });
-    setUsers(updateUsers);
+    setAllUsers(updateUsers);
     setShowModal(false);
   }
   
@@ -61,13 +63,13 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {users.map((user, index) => (
+              {allUsers.map((user, index) => (
                 <tr key={user.id}>
                   <td className='column-user'>{index + 1}</td>
                   <td className='column-user'>{user.userId}</td>
                   <td className='column-user'>{user.nickname}</td>
                   <td className='column-user'>{user.email}</td>
-                  <td className='column-user'>{user.create_date}</td>
+                  <td className='column-user'>{user.createDate}</td>
                   <td>
                     <Button variant='secondary' onClick={() => handleEdit(user)}>편집</Button>
                   </td>

@@ -15,18 +15,17 @@ function UserEditModal({ isOpen, onRequestClose, user, onSave}) {
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:8080/users/${user.id}`, {nickname, email});
+            const response = await axios.put(`http://localhost:8080/api/updateUser/${user.userId}`, {nickname, email});
             onSave({
-                id: user.id,
                 nickname: nickname,
                 email: email,
-                create_date: user.create_date
+                createDate: user.createDate
             });
             onRequestClose();
         } catch (error) {
             console.error('update 실패', error);
         }
-    }, [nickname, email, user.id, user.create_date, onSave, onRequestClose]);
+    }, [nickname, email,user.userId, user.createDate, onSave, onRequestClose]);
 
     return (
         <Modal show={isOpen} onHide={onRequestClose}>

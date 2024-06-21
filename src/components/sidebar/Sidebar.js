@@ -23,7 +23,7 @@ function Sidebar() {
           <li><Link to="/quizlist">문제 풀기</Link></li>
           <li><Link to="/editortest">테스트용 IDE</Link></li>
           <li><Link to="/editor">질의응답 게시판</Link></li>
-          <li><Link to="/editor">Test Menu</Link></li>
+          <li><Link to="/chat">채팅</Link></li>
           <li><Link to="/editor">Test Menu</Link></li>
           {isAdminPage && (
             <div className="admin-menu">

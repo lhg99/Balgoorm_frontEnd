@@ -28,7 +28,7 @@ const UseWebSocket = () => {
   const joinChatRoom = useCallback(() => {
     if(stompClient.current && stompClient.current.connected && user && user?.nickname) {
       const chatRequest = { senderName: user?.nickname, chatBody: '입장하였습니다.'};
-      stompClient.current.send("app/join", {}, JSON.stringify(chatRequest));
+      stompClient.current.send("pub/join", {}, JSON.stringify(chatRequest));
     }
   }, [user]);
 
