@@ -2,13 +2,19 @@
  * 로그인한 사용자 확인하는 코드
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './AuthContext.js';
 
 function ProtectedRoute({ children}) {
-    const { user, isLoading } = useAuth();
+    const { user, isLoading, fetchUserInfo } = useAuth();
     const location = useLocation();
+
+    useEffect(() => {
+        if (!user) {
+            fetchUserInfo();
+        }
+    }, [user, fetchUserInfo]);
 
     if(isLoading) {
         return <div>Loading...</div>;

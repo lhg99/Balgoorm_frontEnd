@@ -3,16 +3,19 @@ import { useMessage } from '../MessageProvider.js';
 import { Stomp } from '@stomp/stompjs';
 import axios from 'axios';
 import { useAuth } from '../../user/auth/AuthContext.js';
+import SockJS from 'sockjs-client'
 
-function UseWebSocket() {
+const UseWebSocket = () => {
   const { addMessage, InputValue, setInputValue } = useMessage();
   const { user } = useAuth();
   const stompClient = useRef(null);
 
   const connect = useCallback(() => {
-    const socket = new WebSocket("ws://localhost:8080/chat");
+    const socket = new SockJS("http://localhost:8080/websocket");
     stompClient.current = Stomp.over(socket);
-    stompClient.current.connect({}, () => {
+
+    stompClient.current.connect({}, (frame) => {
+      console.log("connected: ", frame);
       stompClient.current.subscribe("/sub/chat", (message) => {
         const newMessage = JSON.parse(message.body);
         addMessage(newMessage);
@@ -23,21 +26,22 @@ function UseWebSocket() {
   }, [addMessage]);
 
   const joinChatRoom = useCallback(() => {
-    if(stompClient.current && user && user?.nickname) {
+    if(stompClient.current && stompClient.current.connected && user && user?.nickname) {
       const chatRequest = { senderName: user?.nickname, chatBody: '입장하였습니다.'};
-      stompClient.current.send("app/join", {}, JSON.stringify(chatRequest))
+      stompClient.current.send("app/join", {}, JSON.stringify(chatRequest));
     }
   }, [user]);
 
   const disconnect = useCallback(() => {
     if (stompClient.current) {
-      stompClient.current.disconnect();
-      console.log("Disconnected");
+      stompClient.current.disconnect(() => {
+        console.log("Disconnected");
+      });
     }
   }, []);
 
   const sendMessage = (inputValue) => {
-    if (stompClient.current && inputValue.trim() !== '') {
+    if (stompClient.current && stompClient.current.connected && inputValue.trim() !== '') {
       const senderName = user.nickname;
       const chatTime = new Date().toISOString();      
 

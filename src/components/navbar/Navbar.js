@@ -11,15 +11,14 @@ import { useAuth } from '../../user/auth/AuthContext';
 
 function Navbar() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const location = useLocation();
-  const navigate = useNavigate();
   const isLoginoOrSignupPage = location.pathname === '/login' || location.pathname === '/signup';
   const isMypage = location.pathname === '/mypage';
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/login');
+    await logout(navigate);
   }
 
   return (

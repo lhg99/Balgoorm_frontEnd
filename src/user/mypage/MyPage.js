@@ -12,24 +12,19 @@ import './MyPage.css';
 import { useAuth } from '../auth/AuthContext.js';
 
 function MyPage() {
-  const [userInfo, setUserInfo] = useState({userId:'', nickname:'', email:'', password:''});
-  const {user, fetchUserInfo} = useAuth();
+  const [userInfo, setUserInfo] = useState({userId:'', nickname:'', email:''});
+  const {user} = useAuth();
 
   useEffect(() => {
-    if(!user) {
-      fetchUserInfo();
+    if(user) {
+      setUserInfo({
+        userId: user.userId || '',
+        nickname: user.nickname || '',
+        email: user.email || ''
+      });
     }
-
-    // 테스트용 유저정보
-    // setUserInfo({
-    //   userId: 'lee99',
-    //   nickname: 'lhg99',
-    //   email: 'lee991229@naver.com',
-    //   password: '123123'
-    // });
-
-  }, [user, fetchUserInfo]);
-
+  }, [user]);
+  
   return (
   <div>
     <div className='d-flex'>
@@ -47,7 +42,7 @@ function MyPage() {
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={3}>아이디</Form.Label>
                 <Col sm={5}>
-                  <Form.Control type="text" value={user.userId} readOnly />
+                  <Form.Control type="text" value={userInfo.userId} readOnly />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">
@@ -59,13 +54,13 @@ function MyPage() {
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={3}>닉네임</Form.Label>
                 <Col sm={5}>
-                  <Form.Control type="text" value={user.nickname} readOnly />
+                  <Form.Control type="text" value={userInfo.nickname} readOnly />
                 </Col>
               </Form.Group>
               <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={3}>이메일</Form.Label>
                 <Col sm={5}>
-                  <Form.Control type="text" value={user.email} readOnly />
+                  <Form.Control type="text" value={userInfo.email} readOnly />
                 </Col>
               </Form.Group>
             </Form>

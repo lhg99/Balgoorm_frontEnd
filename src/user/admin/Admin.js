@@ -9,44 +9,17 @@ import { Button, Table } from 'react-bootstrap';
 import axios from 'axios';
 import UserEditModal from './UserEditModal.js';
 import './Admin.css';
+import { useAuth } from '../auth/AuthContext.js';
 
 function Admin() {
-  const initialUsers = [
-    { userId: "lee99", nickname: "alice", email: "alice@example.com", create_date: "2024-06-14 10:00 AM"},
-    { userId: "lhg12", nickname: "Bob", email: "bob@example.com", create_date: "2024-06-10 02:00 PM" },
-    { userId: "lee29", nickname: "Charlie", email: "charlie@example.com", create_date: "2024-06-09 04:00 AM" }
-  ]
-
-  const [users, setUsers] = useState(initialUsers);
   const [showModal, setShowModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [userCount, setUserCount] = useState(0);
+  const { users, setUsers, userCount, fetchUsers, fetchCount } = useAuth();
 
   useEffect(() => {
-    // 유저 데이터 가져옴
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/admin/all');
-        setUsers(response.data);
-      } catch (error) {
-        console.error("error", error);
-      }
-    };
     fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    // 총 회원수 가져옴
-    const fetchCount = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/admin/totalUsers');
-        setUserCount(response.data.count); // count: num 형태로 저장되있을 때
-      } catch (error) {
-        console.error('총 회원수 가져오기 실패', error);
-      }
-    }
     fetchCount();
-  }, []);
+  }, [fetchUsers, fetchCount]);
   
 
   const handleEdit = (user) => {

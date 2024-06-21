@@ -1,12 +1,11 @@
 /**
  * 로그인 페이지
- * 아이디 찾기, 비밀번호 변경 시간되면 만들기
+ * 아이디 찾기 시간되면 만들기
  * 쿠키로 토큰 관리하기
- * 로그인을 해야 마이페이지 접근 가능하게 설정
+ * 로그인을 하면 마이페이지로 이동하게 설정
  * 관리자 계정으로 로그인하면 관리자 페이지 접근 가능하게 설정
  */
 
-import axios from 'axios';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Container, Form } from 'react-bootstrap';
@@ -21,15 +20,19 @@ function Login() {
     const navigate = useNavigate();
 
     const submitForm = async (data) => {
-      console.log(data);
-      const { userId, password }  = data;
+      console.log('submitted data: ', data);
+      const { userId, userPassword }  = data;
 
       const navigateCallback = (role) => {
         role === "ADMIN"? navigate('/admin') : navigate('/mypage');
       };
-      login(data, navigateCallback);
 
-    }
+      try {
+        await login({userId, userPassword}, navigateCallback);
+      } catch (error) {
+        console.error("error:", error);
+      }
+    };
     
     return (
     <div>      
@@ -43,7 +46,7 @@ function Login() {
           <Form.Group>
             <Form.Label htmlFor='userId'>아이디</Form.Label>
             <Form.Control 
-            id="id" 
+            id="userId" 
             type="text" 
             placeholder="id 입력" 
             aria-label='아이디'
@@ -53,15 +56,15 @@ function Login() {
           <br />
           
           <Form.Group>
-            <Form.Label htmlFor='password'>비밀번호</Form.Label>
+            <Form.Label htmlFor='userPassword'>비밀번호</Form.Label>
             <Form.Control 
-            id='password' 
+            id='userPassword' 
             type="password" 
             placeholder="비밀번호 입력" 
             aria-label='비밀번호' 
-            {...register("password", {required: "비밀번호를 입력하세요"})}/>
+            {...register("userPassword", {required: "비밀번호를 입력하세요"})}/>
           </Form.Group>
-          {errors.password && <div className='error-message'>{errors.password.message}</div>}
+          {errors.userPassword && <div className='error-message'>{errors.userPassword.message}</div>}
 
           <Button variant="primary" type="submit" className="w-100 mt-4" aria-label='로그인 버튼'>
             로그인

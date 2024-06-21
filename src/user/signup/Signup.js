@@ -17,9 +17,13 @@ function Signup() {
     const {userId, nickname, email, password} = data;
     const postData = { userId, nickname, email, password };
 
+    if(userId === 'admin') {
+      
+    }
+
     // api 호출 로직
     try {
-      const response = await axios.post('http://localhost:8080/signup', postData);
+      const response = await axios.post('http://localhost:8080/api/signup', postData);
       console.log(response.data);
     } catch(error) {
       if(error.response) {
