@@ -7,7 +7,7 @@
 /* 탭 메뉴 css */
 
 .tab-content {
-    height: calc(100% - 21px);
+    height: calc(100% - 22px);
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -71,10 +71,67 @@
 
 .problem-detail-name {
     border-bottom: 1px solid #dee2e6;
-    
+
 }
 
 /* 문제 css 끝 */
+
+/* 언어 선택 css  */
+
+.horizontal-menu {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+}
+
+.language-container {
+    margin-left: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.language-container div,
+.horizontal-menu div {
+    display: flex;
+}
+
+.language-container div svg,
+.horizontal-menu div svg {
+    height: 100%;
+}
+
+.horizontal-menu:hover .language-container {
+    display: flex;
+}
+
+/* 언어 선택 애니메이션 css */
+/* Animation.css */
+.fade-enter {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.fade-exit {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 300ms, transform 300ms;
+}
+
+/* 언어 선택 애니메이션 css 끝 */
+
+
+/* 언어 선택 css 끝 */
 
 /* 편집기 css */
 
