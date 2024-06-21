@@ -12,18 +12,20 @@ import './MyPage.css';
 import { useAuth } from '../auth/AuthContext.js';
 
 function MyPage() {
-  const [userInfo, setUserInfo] = useState({userId:'', nickname:'', email:''});
+  const [userInfo, setUserInfo] = useState({});
   const {user} = useAuth();
 
   useEffect(() => {
-    if(user) {
-      setUserInfo({
-        userId: user.userId || '',
-        nickname: user.nickname || '',
-        email: user.email || ''
-      });
-    }
-  }, [user]);
+    console.log("user :", user);
+    // if(user) {
+    //   setUserInfo({
+    //     userId: user.userId || '',
+    //     nickname: user.nickname || '',
+    //     email: user.email || ''
+    //   });
+    // }
+  }
+);
   
   return (
   <div>

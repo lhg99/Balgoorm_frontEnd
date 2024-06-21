@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true); // 로딩여부
     const [users, setUsers] = useState([]); // 유저 정보
     const [userCount, setUserCount] = useState(0); // 총 유저 수
+    const [fetchedUser, setFetchedUser] = useState(null); // 패치한 유저 가져오기
 
     const setAuthToken = (token) => {
         Cookies.set('token', token, { expires: 7, secure: true, sameSite: 'Strict'});
@@ -42,10 +43,11 @@ export const AuthProvider = ({ children }) => {
             }, withCredentials: true});
             
             console.log("response: ", response);
+            console.log("response.data :", response.data);
             const { token, role } = response.data;
             setAuthToken(token);
             setUserRole(role);
-            setUser({ "userId": userData.userId, "role": role });
+            setUser({ "userId": userData.userId, "role": role, "id": response.data.userId });
             navigateCallback(role);
         } catch(error) {
             alert(error.response ? error.response.data : "로그인 실패");
@@ -87,7 +89,7 @@ export const AuthProvider = ({ children }) => {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });
-            setUser({
+            setFetchedUser({
                 userId: response.data.userId,
                 nickname: response.data.nickname,
                 email: response.data.email,
@@ -125,7 +127,7 @@ export const AuthProvider = ({ children }) => {
         fetchUserInfo();
     }, []);
     
-    const value = { user, users, setUsers, login, logout, isLoading, fetchUserInfo, fetchUsers, fetchCount };
+    const value = { user, users, setUsers, login, logout, isLoading, fetchUserInfo, fetchUsers, fetchCount, setFetchedUser };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

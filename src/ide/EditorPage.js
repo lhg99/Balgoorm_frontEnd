@@ -9,6 +9,7 @@ import ArrowRightIcon from '../components/icons/ArrowRightIcon';
 import ArrowLeftIcon from '../components/icons/ArrowLeftIcon';
 import defaultValues from './DefaultValues';
 import { CSSTransition } from 'react-transition-group';
+import { useAuth } from '../user/auth/AuthContext';
 
 function EditorPage() {
   const { id } = useParams(); // 퀴즈 ID에 해당
@@ -20,9 +21,12 @@ function EditorPage() {
   const [selectedLanguage, setSelectedLanguage] = useState("JAVA");
   const [editorValue, setEditorValue] = useState(defaultValues.JAVA);
   const [isLanguageContainerVisible, setLanguageContainerVisible] = useState(true);
+  const {user} = useAuth();
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/quiz/detail/${id}?userId=1`)
+    console.log("user :", user);
+    console.log("user dbid :",user.id);
+    axios.get(`http://localhost:8080/api/quiz/detail/${id}?userId=${user.id}`)
       .then(response => {
         console.log('response :', response);
         const data = response.data;

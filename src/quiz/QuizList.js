@@ -3,27 +3,28 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import './QuizList.css';
-
-
+import { useAuth } from '../user/auth/AuthContext';
 
 function QuizList() {
   const [quiz, setQuiz] = useState([]);
   const [page, setPage] = useState(1);
-
-  const fetchData = async (pageNumber) => {
-    try {
-      console.log("요청시작");
-      const response = await axios.get(`http://localhost:8080/api/quiz/list/${pageNumber}`);
-      console.log("요청완료 :" + JSON.stringify(response));
-      setQuiz(response.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+  const { user } = useAuth();
 
   useEffect(() => {
-    fetchData(page);
-  }, [page]);
+    const fetchData = async () => {
+      console.log("user :", user);
+      try {
+        console.log("요청시작");
+        const response = await axios.get(`http://localhost:8080/api/quiz/list/${page}`);
+        console.log("요청완료 :" + JSON.stringify(response));
+        setQuiz(response.data);
+      } catch (error) {
+        console.error('문제 요청 실패:', error);
+      }
+    };
+
+    fetchData();
+  }, [page, user]);
 
   const handlePreviousPage = () => {
     if (page > 1) {
