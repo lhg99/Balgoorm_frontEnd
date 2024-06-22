@@ -77,7 +77,7 @@ const UseWebSocket = () => {
           currentUser: fetchedUser.nickname === senderName.trim() 
         }
         console.log('Adding history message:', newMessage);
-        addMessage({});
+        addMessage(newMessage);;
       });
     } catch (error) {
       console.error('failed to fetch chat history', error);
