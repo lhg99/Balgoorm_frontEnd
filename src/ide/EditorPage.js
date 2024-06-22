@@ -3,12 +3,13 @@ import { useParams } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { Button, Tabs, Tab } from 'react-bootstrap';
 import axios from 'axios';
+import 'aos/dist/aos.css';
+import AOS from 'aos';
 import './EditorPage.css';
 import ResponseModal from '../components/modal/Modal';
 import ArrowRightIcon from '../components/icons/ArrowRightIcon';
 import ArrowLeftIcon from '../components/icons/ArrowLeftIcon';
 import defaultValues from './DefaultValues';
-import { CSSTransition } from 'react-transition-group';
 import { useAuth } from '../user/auth/AuthContext';
 
 function EditorPage() {
@@ -21,12 +22,14 @@ function EditorPage() {
   const [selectedLanguage, setSelectedLanguage] = useState("JAVA");
   const [editorValue, setEditorValue] = useState(defaultValues.JAVA);
   const [isLanguageContainerVisible, setLanguageContainerVisible] = useState(true);
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
+    AOS.init({ duration: 500 });
+
     console.log("user :", user);
-    console.log("user dbid :",user.id);
-    axios.get(`http://localhost:8080/api/quiz/detail/${id}?userId=${user.id}`)
+    console.log("user dbid :", user.id);
+    axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/quiz/detail/${id}?userId=${user.id}`)
       .then(response => {
         console.log('response :', response);
         const data = response.data;
@@ -44,15 +47,17 @@ function EditorPage() {
 
   function runCode() {
     if (editorRef.current) {
+      console.log("user :", user);
       const code = editorRef.current.getValue();
       const requestData = {
         quizId: id,
         language: selectedLanguage,
         code: code,
-        userId: 1
+        userId: user.id
+        // id가 중복되는데 어떻게 변수를 지정해야할지
       };
       console.log("reqData :", requestData);
-      axios.post("http://localhost:8080/api/ide/run", requestData)
+      axios.post("https://k618de24a93cca.user-app.krampoline.com/api/ide/run", requestData)
         .then(response => {
           const data = response.data;
           console.log("response data:", data);
@@ -82,13 +87,13 @@ function EditorPage() {
 
   return (
     <div className="editor-page">
-      <div className="problem-container">
-        <Tabs defaultActiveKey="basic" id="problem-tabs">
-          <Tab eventKey="basic" title="기본 개념" className="tab-content">
+      <div className="problem-container" data-aos="fade-up">
+        <Tabs defaultActiveKey="problem" id="problem-tabs">
+          {/* <Tab eventKey="basic" title="기본 개념" className="tab-content">
             <div className="basic-content">
               기본 개념 내용
             </div>
-          </Tab>
+          </Tab> */}
           <Tab eventKey="problem" title="문제" className="tab-content">
             <div className="problem-name">
               {quiz.quizTitle}
@@ -100,11 +105,15 @@ function EditorPage() {
             </div>
             <div className="problem-detail">
               <div className="problem-detail-name">
-                주의사항? 입출력예제?
+                코드 실행 결과
               </div>
-              {quiz.quizRegDate ? quiz.quizRegDate.split('\\n').map((line, index) => (
-                <div key={index}>{line}</div>
-              )) : 'Loading...'}
+              <div className="problem-detail-content">
+                <p><strong>Answer:</strong> {responseData.answer}</p>
+                <p><strong>Correct:</strong> {responseData.correct === undefined ? '' : responseData.correct ? '정답' : '오답. 위 정답을 참고해서 다시 작성이 필요'}</p>
+                <p><strong>Memory Usage:</strong> {responseData.memoryUsage}</p>
+                <p><strong>Result:</strong> {responseData.result}</p>
+                <p><strong>Run Time:</strong> {responseData.runTime}</p>
+              </div>
             </div>
           </Tab>
           <Tab eventKey="qnaboard" title="질의응답">
@@ -115,19 +124,12 @@ function EditorPage() {
         </Tabs>
       </div>
 
-      <div className="editor-container">
+      <div className="editor-container" data-aos="fade-left">
         <div className="horizontal-menu">
-          <div>
-            언어 선택
-            {!isLanguageContainerVisible && <ArrowRightIcon onClick={toggleLanguageContainer} />}
-          </div>
-          <CSSTransition
-            in={isLanguageContainerVisible}
-            timeout={300}
-            classNames="fade"
-            unmountOnExit
-          >
-            <div className="language-container">
+          <div className="language-selection-text">언어 선택</div>
+          {isLanguageContainerVisible ? (
+            <div className="language-container fade-in" data-aos="fade-left"
+            >
               <div>
                 <input
                   type="radio"
@@ -160,10 +162,15 @@ function EditorPage() {
                   onChange={handleLanguageChange}
                 />
                 <label htmlFor="cpp">C++</label>
-                <ArrowLeftIcon onClick={toggleLanguageContainer} />
               </div>
+              <ArrowLeftIcon onClick={toggleLanguageContainer} />
             </div>
-          </CSSTransition>
+          ) : (
+            <ArrowRightIcon
+              onClick={toggleLanguageContainer}
+              data-aos="fade-right"
+            />
+          )}
         </div>
 
         <div className="editor-box">
@@ -186,12 +193,6 @@ function EditorPage() {
         </div>
         <div className="output-container">
           <div className="output-title">Output: {output}</div>
-          <p><strong>Answer:</strong> {responseData.answer}</p>
-          <p><strong>Correct:</strong> {responseData.correct ? 'True' : 'False'}</p>
-          <p><strong>Error Message:</strong> {responseData.errorMessage || 'None'}</p>
-          <p><strong>Memory Usage:</strong> {responseData.memoryUsage}</p>
-          <p><strong>Result:</strong> {responseData.result}</p>
-          <p><strong>Run Time:</strong> {responseData.runTime}</p>
         </div>
         <ResponseModal
           show={isModalOpen}

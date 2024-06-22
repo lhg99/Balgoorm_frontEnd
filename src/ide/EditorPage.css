@@ -2,6 +2,7 @@
     display: flex;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 /* 탭 메뉴 css */
@@ -31,15 +32,11 @@
 /* 문제 css */
 
 .problem-container {
-    /* display: flex; */
     width: 49%;
     margin-right: 10px;
     height: 100%;
-    /* border: 2px solid #c0c0c0; */
     border-radius: 5px;
-
 }
-
 
 .problem-name,
 .problem-content,
@@ -51,14 +48,10 @@
 }
 
 .problem-name {
-    /* border-top-left-radius: 5px;
-    border-top-right-radius: 5px; */
-    /* border-bottom: 2px solid #c0c0c0; */
     height: 49px;
 }
 
 .problem-content {
-    /* border-bottom: 2px solid #c0c0c0; */
     height: 70%;
     overflow: auto;
 }
@@ -66,13 +59,13 @@
 .problem-detail {
     overflow: auto;
     height: calc(30% - 49px);
-    border-radius: 5px;
+    border-radius: 0px 0px 5px 5px;
 }
 
 .problem-detail-name {
     border-bottom: 1px solid #dee2e6;
-
 }
+
 
 /* 문제 css 끝 */
 
@@ -104,56 +97,27 @@
     display: flex;
 }
 
-/* 언어 선택 애니메이션 css */
-/* Animation.css */
-.fade-enter {
-    opacity: 0;
-    transform: translateX(-20px);
-}
-
-.fade-enter-active {
-    opacity: 1;
-    transform: translateX(0);
-    transition: opacity 300ms, transform 300ms;
-}
-
-.fade-exit {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.fade-exit-active {
-    opacity: 0;
-    transform: translateX(-20px);
-    transition: opacity 300ms, transform 300ms;
-}
-
-/* 언어 선택 애니메이션 css 끝 */
-
-
 /* 언어 선택 css 끝 */
 
 /* 편집기 css */
 
 .editor-container {
-    /* display: flex; */
     width: 50%;
     height: 100%;
     border: 1px solid #dee2e6;
     border-radius: 5px;
-
 }
 
 .editor-box {
     width: 100%;
-    height: 50%;
+    height: 70%;
     padding: 5px;
 }
 
 .run-btn {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-bottom: 10px;
 }
 
