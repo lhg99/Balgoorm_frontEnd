@@ -19,9 +19,6 @@ import Chat from './chat/Chat.js';
 import DeleteAccount from './user/DeleteAccount.js';
 
 function App() {
-
-  const { sendMessage } = UseWebSocket();
-
   return (
     <AuthProvider>
       <MessageProvider>
@@ -46,7 +43,7 @@ function App() {
                   <Route path="/editortest" element={<TestEditorPage />} />
                   <Route path="/quizlist" element={<QuizList />} />
                   <Route path="/quiz/detail/:id" element={<EditorPage />} />
-                  <Route path="/chat" element={<Chat sendMessage={sendMessage}/>} />
+                  <Route path="/chat" element={<Chat />} />
                 </Routes>
               </div>
             </div>

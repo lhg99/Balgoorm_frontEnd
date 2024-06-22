@@ -70,6 +70,7 @@ export const AuthProvider = ({ children }) => {
             setAuthToken(token);
             setUserRole(role);
             setUser({ "userId": userData.userId, "role": role, "id": response.data.userId });
+            await loadUserInfo();
             navigateCallback(role);
         } catch(error) {
             alert(error.response ? error.response.data : "로그인 실패");
@@ -146,8 +147,9 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.get('http://localhost:8080/api/admin/totalUsers', {
                 withCredentials: true
         });
-        setUserCount(response.data.totalUsers);
-        console.log("user count: ", response.data.totalUsers);
+        console.log("response data: ", response.data);
+        setUserCount(response.data);
+        // console.log("user count: ", response.data.totalUsers);
         } catch (error) {
         console.error('총 회원수 가져오기 실패', error);
         }

@@ -17,7 +17,7 @@ function Admin() {
   useEffect(() => {
     fetchAllUsers();
     fetchCount();
-  }, [fetchAllUsers, fetchCount]);
+  }, []);
 
   if(isLoading) {
     return <div>Loading...</div>;

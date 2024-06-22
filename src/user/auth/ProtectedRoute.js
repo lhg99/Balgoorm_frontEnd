@@ -11,10 +11,10 @@ function ProtectedRoute({ children}) {
     const location = useLocation();
 
     useEffect(() => {
-        if (!fetchedUser) {
+        if (!fetchedUser && !isLoading) {
             loadUserInfo();
         }
-    }, [fetchedUser, loadUserInfo]);
+    }, [fetchedUser, isLoading, loadUserInfo]);
 
     if(isLoading) {
         return <div>Loading...</div>;
