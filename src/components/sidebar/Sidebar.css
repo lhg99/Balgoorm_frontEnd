@@ -9,8 +9,10 @@
 }
 
 .sidebar-container {
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
+  /* height: 65%; */
+  text-align: center;
 }
 
 .sidebar ul {
@@ -50,8 +52,7 @@
   display: flex;
   justify-content: center;
   box-sizing: border-box;
-  width: 14.375rem;
-  margin-top: auto; 
+  margin-bottom: auto;
 }
 
 .chat-container {
