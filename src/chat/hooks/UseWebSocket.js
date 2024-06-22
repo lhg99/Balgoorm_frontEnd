@@ -11,8 +11,9 @@ const UseWebSocket = () => {
   const stompClient = useRef(null);
 
   const connect = useCallback(() => {
-    const socket = new SockJS("http://localhost:8080/chat");
+    const socket = new SockJS("https://k618de24a93cca.user-app.krampoline.com/chat");
     stompClient.current = Stomp.over(socket);
+    console.log("socket :", socket);
 
     stompClient.current.connect({}, (frame) => {
       console.log("connected: ", frame);
