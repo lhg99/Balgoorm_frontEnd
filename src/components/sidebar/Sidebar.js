@@ -33,6 +33,7 @@ function Sidebar() {
           )}
         </ul>
 
+      </div>
         {isNotChatPage && (
           <div className="chat-wrapper">
             <div className="chat-container">
@@ -54,7 +55,6 @@ function Sidebar() {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 }
