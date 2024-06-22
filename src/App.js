@@ -32,16 +32,16 @@ function App() {
                   <Route path="/" />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
-                  <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
+                  <Route path="/mypage" element={<MyPage />} />
                   <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
                   <Route path="/delete" element={<ProtectedRoute><DeleteAccount /></ProtectedRoute>} />
                   {/* 기존 경로들 추가 */}
                   {/* <Route path="/main" element={<MainPage />} /> */}
                   {/* <Route path="/editor" element={<EditorPage />} />
                   <Route path="/editortest" element={<TestEditorPage />} /> */}
-                  <Route path="/editor" element={<ProtectedRoute><EditorPage /></ProtectedRoute>} />
+                  <Route path="/editor" element={<EditorPage />} />
                   <Route path="/editortest" element={<TestEditorPage />} />
-                  <Route path="/quizlist" element={<ProtectedRoute><QuizList /></ProtectedRoute>} />
+                  <Route path="/quizlist" element={<QuizList />} />
                   <Route path="/quiz/detail/:id" element={<EditorPage />} />
                   <Route path="/chat" element={<Chat />} />
                 </Routes>
