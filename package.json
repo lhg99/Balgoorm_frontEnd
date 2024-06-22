@@ -21,6 +21,7 @@
     "react-scripts": "5.0.1",
     "react-transition-group": "^4.4.5",
     "sockjs-client": "^1.6.1",
+    "start": "^5.1.0",
     "stompjs": "^2.3.3",
     "web-vitals": "^2.1.4"
   },

@@ -45,20 +45,20 @@ const UseWebSocket = () => {
   }, []);
 
   const sendMessage = (inputValue) => {
-    if (stompClient.current && stompClient.current.connected && inputValue.trim() !== '') {
-      const senderName = fetchedUser.nickname;    
+    console.log("Sending message: ");
+    if (stompClient.current && stompClient.current.connected) {
+      const senderName = fetchedUser.nickname;
       const chatMessage = `${senderName}: ${inputValue}`;
-
-      console.log("Sending message: ", chatMessage);
       stompClient.current.send("/pub/chat", {}, chatMessage);
       
-      const newMessage = {
-        senderName,
-        chatBody: inputValue,
-        currentUser: true
-      }
-      addMessage(newMessage);
-      console.log("Added message: ", newMessage);
+      // stompClient.current.send("/pub/chat", {}, JSON.stringify(payload));
+      console.log("Sending message: ", chatMessage);
+      // const newMessage = {
+      //   senderName,
+      //   chatBody: inputValue,
+      //   currentUser: true
+      // }
+      addMessage(chatMessage);
       setInputValue('');
     }
   };
@@ -88,7 +88,6 @@ const UseWebSocket = () => {
   useEffect(() => {
     if(fetchedUser && fetchedUser.nickname) {
       fetchChatHistory();
-      connect();
       joinChatRoom();
     }
     return () => {

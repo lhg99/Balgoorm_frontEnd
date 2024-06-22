@@ -3,12 +3,16 @@ import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 import { useMessage } from '../../chat/MessageProvider';
 import { ChatIcon } from '../../img/ChatIcon';
+import UseWebSocket from '../../chat/hooks/UseWebSocket';
 
 function Sidebar() {
   const location = useLocation();
   const { message } = useMessage();
   const isAdminPage = location.pathname === '/admin';
   const isNotChatPage = location.pathname !== '/chat';
+  const { connect } = UseWebSocket();
+
+  const handleConnect = () => {connect()}
 
   return (
     <div className="sidebar">
@@ -39,9 +43,9 @@ function Sidebar() {
               <div className="chat-header">
                 채팅헤더
                 <div className='header-right'>
-                  <a href='/chat'>
+                  <Link to='/chat' onClick={handleConnect}>
                     <ChatIcon />
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className='chat-message-div'>

@@ -15,8 +15,6 @@ export const MessageProvider = ({ children }) => {
     const { sendMessage, connect, disconnect } = UseWebSocket();
     const [inputValue, setInputValue] = useState(''); // 사용자 입력 저장 변수
     const [message, setMessage] = useState([
-        { senderName: 'user1', chatBody: "hello, i'm user1", urrentUser: false},
-        { senderName: 'user2', chatBody: "hi, this is test data", currentUser: false}
     ]);
     
     const addMessage = useCallback((newMessage) => {
@@ -24,6 +22,7 @@ export const MessageProvider = ({ children }) => {
             const updatedMessages = [...prevMessage, newMessage];
             console.log('previous message: ', prevMessage);
             console.log('Updated messages:', updatedMessages);
+            sendMessage(updatedMessages);
             return updatedMessages;
         });
     }, []);
@@ -38,7 +37,8 @@ export const MessageProvider = ({ children }) => {
 
     useEffect(() => {
         if(fetchedUser && fetchedUser.nickname) {
-            connect();
+            console.log("소켓 연결")
+            // connect();
         }
         return() => {
             disconnect();
