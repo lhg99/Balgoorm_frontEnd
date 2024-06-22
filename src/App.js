@@ -39,9 +39,9 @@ function App() {
                   {/* <Route path="/main" element={<MainPage />} /> */}
                   {/* <Route path="/editor" element={<EditorPage />} />
                   <Route path="/editortest" element={<TestEditorPage />} /> */}
-                  <Route path="/editor" element={<EditorPage />} />
+                  <Route path="/editor" element={<ProtectedRoute><EditorPage /></ProtectedRoute>} />
                   <Route path="/editortest" element={<TestEditorPage />} />
-                  <Route path="/quizlist" element={<QuizList />} />
+                  <Route path="/quizlist" element={<ProtectedRoute><QuizList /></ProtectedRoute>} />
                   <Route path="/quiz/detail/:id" element={<EditorPage />} />
                   <Route path="/chat" element={<Chat />} />
                 </Routes>
