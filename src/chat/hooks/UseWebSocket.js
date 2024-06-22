@@ -6,19 +6,22 @@ import { useAuth } from '../../user/auth/AuthContext.js';
 import SockJS from 'sockjs-client'
 
 const UseWebSocket = () => {
-  const { addMessage, InputValue, setInputValue } = useMessage();
-  const { user } = useAuth();
+  const { addMessage, setInputValue } = useMessage();
+  const { fetchedUser } = useAuth();
   const stompClient = useRef(null);
 
   const connect = useCallback(() => {
-    const socket = new SockJS("http://localhost:8080/websocket");
+    const socket = new SockJS("http://localhost:8080/chat");
     stompClient.current = Stomp.over(socket);
 
     stompClient.current.connect({}, (frame) => {
       console.log("connected: ", frame);
       stompClient.current.subscribe("/sub/chat", (message) => {
-        const newMessage = JSON.parse(message.body);
+        const messageBody = message.body.trim();
+        const [senderName, chatBody] = messageBody.split(": ");
+        const newMessage = {senderName: senderName.trim(), chatBody: chatBody.trim()};
         addMessage(newMessage);
+        console.log("Added message: ", newMessage);
       });
     }, (error) => {
       console.error('Connection error: ', error);
@@ -26,11 +29,12 @@ const UseWebSocket = () => {
   }, [addMessage]);
 
   const joinChatRoom = useCallback(() => {
-    if(stompClient.current && stompClient.current.connected && user && user?.nickname) {
-      const chatRequest = { senderName: user?.nickname, chatBody: '입장하였습니다.'};
-      stompClient.current.send("pub/join", {}, JSON.stringify(chatRequest));
+    if(stompClient.current && stompClient.current.connected && fetchedUser && fetchedUser?.nickname) {
+      const chatMessage = `${fetchedUser.nickname}: 입장하였습니다.`;
+      console.log("Joining chat room with message: ", chatMessage);
+      stompClient.current.send("pub/join", {}, chatMessage);
     }
-  }, [user]);
+  }, [fetchedUser]);
 
   const disconnect = useCallback(() => {
     if (stompClient.current) {
@@ -42,36 +46,47 @@ const UseWebSocket = () => {
 
   const sendMessage = (inputValue) => {
     if (stompClient.current && stompClient.current.connected && inputValue.trim() !== '') {
-      const senderName = user.nickname;
-      const chatTime = new Date().toISOString();      
+      const senderName = fetchedUser.nickname;    
+      const chatMessage = `${senderName}: ${inputValue}`;
 
-      const chatMessage = {
-        senderName,
-        chatBody: InputValue,
-        chatTime,
-        currentUser: true
-      };
-
-      stompClient.current.send("/pub/chat", {}, JSON.stringify(chatMessage));
+      console.log("Sending message: ", chatMessage);
+      stompClient.current.send("/pub/chat", {}, chatMessage);
       
-      addMessage(chatMessage);
+      const newMessage = {
+        senderName,
+        chatBody: inputValue,
+        currentUser: true
+      }
+      addMessage(newMessage);
+      console.log("Added message: ", newMessage);
       setInputValue('');
     }
   };
 
   const fetchChatHistory = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:8080/history');
+      const response = await axios.get('http://localhost:8080/api/history');
       const chatHistory = response.data;
-      chatHistory.forEach(message => addMessage(message))
+      console.log("Fetched chat history: ", chatHistory);
+
+      chatHistory.forEach(message => {
+        const [senderName, chatBody] = message.split(": ");
+        const newMessage = {
+          senderName: senderName.trim(), 
+          chatBody: chatBody.trim(), 
+          currentUser: fetchedUser.nickname === senderName.trim() 
+        }
+        console.log('Adding history message:', newMessage);
+        addMessage({});
+      });
     } catch (error) {
       console.error('failed to fetch chat history', error);
     }  
-  }, [addMessage]);
+  }, [addMessage, fetchedUser]);
 
   // 연결을 생성하고 해제하는 로직
   useEffect(() => {
-    if(user && user.nickname) {
+    if(fetchedUser && fetchedUser.nickname) {
       fetchChatHistory();
       connect();
       joinChatRoom();
@@ -79,9 +94,9 @@ const UseWebSocket = () => {
     return () => {
       disconnect();
     };
-  }, [user, connect, fetchChatHistory, joinChatRoom, disconnect]);
+  }, [fetchedUser, connect, fetchChatHistory, joinChatRoom, disconnect]);
 
-  return { sendMessage };
+  return { sendMessage, connect, disconnect };
 }
 
 export default UseWebSocket;

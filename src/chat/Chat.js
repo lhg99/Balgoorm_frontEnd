@@ -1,38 +1,39 @@
 /**
  * 채팅 페이지
  * STOMP 라이브러리로 연결
- * 화면 구현 해야됨
- * 채팅하는 인원 수 해보기
  */
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Button, Container, Form } from 'react-bootstrap';
 import { useMessage } from './MessageProvider';
 import './Chat.css'
+import { useAuth } from '../user/auth/AuthContext';
 
-function Chat({sendMessage}) {
-  const { message, addMessage, handleKeyDown, inputValue, setInputValue} = useMessage();
+function Chat() {
+  const { fetchedUser } = useAuth();
+  const { message, addMessage, handleKeyDown, setInputValue, inputValue} = useMessage();
 
-  const ssssendMessage = useCallback(() => {
+  const handleSendMessage = useCallback(() => {
     if (inputValue.trim() !== '') {
-      // 임시로 로컬 메시지 객체 생성
       const newMessage = {
-        chatId: Date.now(),
-        senderName: 'lee99',
+        senderName: fetchedUser.nickname,
         chatBody: inputValue,
-        chatTime: new Date().toISOString(),
         currentUser: true
       };
-      addMessage(newMessage); // 메시지 리스트에 추가
+      addMessage(newMessage); // 직접 메시지를 추가
       setInputValue(''); // 입력 필드 초기화
     }
-  }, [inputValue, addMessage, setInputValue]);
+  }, [inputValue, addMessage, setInputValue, fetchedUser]);
+
+  useEffect(() => {
+    console.log("Current messages: ", message); // 상태 변경 시 메시지 로그
+  }, [message]);
   
   return (
   <div>
     <Container className='chatting-container'>
-      {message.map((msg) => (
-        <div className={`message-box ${msg.currentUser ? 'right' : 'left'}`} key={msg.chatId}>
+      {message.map((msg, index) => (
+        <div className={`message-box ${msg.currentUser ? 'right' : 'left'}`} key={index}>
           {msg.currentUser ? (
             <>
               <div className='message-content'>{msg.chatBody}</div>
@@ -56,7 +57,7 @@ function Chat({sendMessage}) {
           onKeyDown={handleKeyDown} 
           />
           </Form.Group>
-          <Button variant="primary" className='button-inline' onClick={ssssendMessage}>전송</Button>
+          <Button variant="primary" className='button-inline' onClick={handleSendMessage}>전송</Button>
       </Form>
     </Container> 
   </div>
