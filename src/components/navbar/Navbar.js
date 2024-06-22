@@ -2,7 +2,6 @@ import React from 'react';
 import './Navbar.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Board } from '../../img/BoardImg';
 import { Logout } from '../../img/LogoutImg';
 import { Login } from '../../img/LoginImg';
 import { Mypage } from '../../img/MyPageImg';
@@ -14,7 +13,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const isLoginoOrSignupPage = location.pathname === '/login' || location.pathname === '/signup';
+  const isLoginoOrSignupPage = location.pathname === '/login' || location.pathname === '/' || location.pathname === '/signup';
   const isMypage = location.pathname === '/mypage';
 
   const handleLogout = async () => {
@@ -37,9 +36,6 @@ function Navbar() {
       </div>
 
       <div className="navmenu">
-        <a href='/board'>
-        <Board />
-        </a>
         <a href="/mypage">
           <Mypage />
         </a>
