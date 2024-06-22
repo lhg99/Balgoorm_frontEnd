@@ -1,0 +1,27 @@
+.likeButtonContainer {
+    display: flex;
+    align-items: center;
+    /* background-color: #fff; */
+    border-radius: 50px;
+    padding: 5px 10px;
+    color: #333;
+    /* border: 1px solid #ccc; */
+    cursor: pointer;
+    /* margin-left: 440px; */
+    margin-right: 0px;
+
+}
+
+.iconContainer {
+    text-align: right;
+    /* align-items: center; */
+}
+
+.count {
+    margin-left: 5px;
+    font-size: 16px;
+}
+
+.icon {
+    font-size: 20px;
+}

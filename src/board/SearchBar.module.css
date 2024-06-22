@@ -1,0 +1,38 @@
+.searchBarContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  max-width: 100%; /* 컨테이너의 최대 너비를 화면 너비로 설정 */
+  overflow: hidden; /* 내용이 넘칠 경우 숨김 */
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%; /* 폼의 너비를 100%로 설정하여 컨테이너에 맞춤 */
+  max-width: 500px; /* 폼의 최대 너비 설정 */
+}
+
+.searchInput {
+  background-color: none;
+  width: 100%; /* 입력 필드가 폼의 너비를 따름 */
+  max-width: 300px; /* 입력 필드의 최대 너비 설정 */
+  padding: 10px;
+  border: none;
+  border-bottom: 2px solid #00212e; /* 하늘색 밑줄 */
+  font-size: 16px;
+  color: #333;
+  outline: none; /* 입력 시 외곽선을 없앱니다. */
+}
+
+.searchButton {
+  background-color: transparent; /* 투명 배경 */
+  border: none;
+  position: absolute;
+  right: 10px; /* 입력 필드 오른쪽에 위치 */
+  cursor: pointer;
+  font-size: 20px;
+  color: #00212e; /* 하늘색 아이콘 */
+}

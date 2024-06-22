@@ -11,6 +11,7 @@ import ArrowRightIcon from '../components/icons/ArrowRightIcon';
 import ArrowLeftIcon from '../components/icons/ArrowLeftIcon';
 import defaultValues from './DefaultValues';
 import { useAuth } from '../user/auth/AuthContext';
+import Board from '../board/Board';
 
 function EditorPage() {
   const { id } = useParams(); // 퀴즈 ID에 해당
@@ -118,6 +119,7 @@ function EditorPage() {
           </Tab>
           <Tab eventKey="qnaboard" title="질의응답">
             <div className="placeholder-content">
+            <Board /> 
               {/* 여기에 나중에 내용을 추가할 수 있습니다 */}
             </div>
           </Tab>

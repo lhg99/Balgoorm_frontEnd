@@ -1,0 +1,25 @@
+.paginationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .pageButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin: 0 10px;
+  }
+  
+  .pageButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  
+  .pageInfo {
+    font-size: 1rem;
+    margin: 0 10px;
+  }
+  
