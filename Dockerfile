@@ -1,9 +1,8 @@
 # Build stage
-FROM krmp-d2hub-idock.9rum.cc/goorm/node:16
+FROM node:16
 WORKDIR /usr/src/app
-COPY src/ ./
-RUN npm ci
-RUN npm run build
-RUN npm install -g serve
+COPY ./ ./
+RUN npm i
+
 EXPOSE 3000
 CMD ["serve", "build"]
