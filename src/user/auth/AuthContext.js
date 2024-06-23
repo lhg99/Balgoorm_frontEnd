@@ -132,7 +132,7 @@ export const AuthProvider = ({ children }) => {
     // 모든 유저 정보 가져오기
     const fetchAllUsers = async() => {
         try {
-            const response = await axios.get('http://localhost:8080/api/admin/all', {
+            const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/admin/all', {
                 withCredentials: true
         });
         const formattedUsers = response.data.map(user => ({
@@ -147,7 +147,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchCount = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/admin/totalUsers', {
+            const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/admin/totalUsers', {
                 withCredentials: true
         });
         console.log("response data: ", response.data);

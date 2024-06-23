@@ -14,7 +14,7 @@ const CommentSection = ({ postId, userId }) => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/comments?postId=${postId}`);
+      const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/comments?postId=${postId}`);
       setComments(response.data);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -33,7 +33,7 @@ const CommentSection = ({ postId, userId }) => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/api/comments', newCommentData, {
+      const response = await axios.post('https://k618de24a93cca.user-app.krampoline.com/api/comments', newCommentData, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -50,7 +50,7 @@ const CommentSection = ({ postId, userId }) => {
   const confirmDeleteComment = async () => {
     if (commentToDelete !== null) {
       try {
-        await axios.delete(`http://localhost:8080/api/board/1/comment${commentToDelete}`, {
+        await axios.delete(`https://k618de24a93cca.user-app.krampoline.com/api/board/1/comment${commentToDelete}`, {
           headers: {
             'Content-Type': 'multipart/form-data'
           },

@@ -14,7 +14,7 @@ const UseWebSocket = () => {
     if (stompClient.current)
       return; // 이미 연결되어 있으면 중단
     
-    const socket = new SockJS("http://localhost:8080/chat");
+    const socket = new SockJS("https://k618de24a93cca.user-app.krampoline.com/chat");
     stompClient.current = Stomp.over(socket);
     console.log("socket :", socket);
 
@@ -69,7 +69,7 @@ const UseWebSocket = () => {
 
   const fetchChatHistory = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/history');
+      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/history');
       const chatHistory = response.data;
       console.log("Fetched chat history: ", chatHistory);
 

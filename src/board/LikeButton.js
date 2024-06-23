@@ -21,7 +21,7 @@ const LikeButton = ({ postId, isLikedInitially, likesCountInitially, onLikeToggl
         setLikesCount(prevCount => prevCount + (newIsLiked ? 1 : -1));
 
         try {
-            await axios.post(`http://localhost:8080/api/posts/${postId}/like`, { isLiked: newIsLiked });
+            await axios.post(`https://k618de24a93cca.user-app.krampoline.com/api/posts/${postId}/like`, { isLiked: newIsLiked });
             onLikeToggle(postId, newIsLiked);
         } catch (error) {
             console.error('Error toggling like:', error);
