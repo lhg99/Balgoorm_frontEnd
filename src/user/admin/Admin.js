@@ -5,7 +5,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
-import UserEditModal from './UserEditModal.js';
 import './Admin.css';
 import { useAuth } from '../auth/AuthContext.js';
 import { useNavigate } from 'react-router-dom';
