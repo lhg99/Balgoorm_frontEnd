@@ -1,9 +1,9 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 20
   selector:
     matchLabels:
       app: frontend
@@ -14,5 +14,16 @@ spec:
     spec:
       containers:
         - name: frontend
-          # 여러분의 image 주소를 입력해주세요.
+          # 여러분의 frontend image 주소를 입력해주세요.
           image: krmp-d2hub-idock.9rum.cc/dev-test/repo_0e0da940c0a0:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 3000
+      targetPort: 3000
