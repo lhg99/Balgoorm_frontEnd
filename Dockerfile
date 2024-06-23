@@ -1,7 +1,7 @@
 # Build stage
 FROM node:16
 WORKDIR /usr/src/app
-RUN npm i
 COPY ./ ./
+RUN npm i
 EXPOSE 3000
 CMD ["serve", "build"]
