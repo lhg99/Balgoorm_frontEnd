@@ -11,15 +11,18 @@ const UseWebSocket = () => {
   const stompClient = useRef(null);
 
   const connect = useCallback(() => {
-    const socket = new SockJS("https://k618de24a93cca.user-app.krampoline.com/chat");
+    if (stompClient.current)
+      return; // 이미 연결되어 있으면 중단
+    
+    const socket = new SockJS("http://localhost:8080/chat");
     stompClient.current = Stomp.over(socket);
     console.log("socket :", socket);
 
     stompClient.current.connect({}, (frame) => {
       console.log("connected: ", frame);
       stompClient.current.subscribe("/sub/chat", (message) => {
-        const messageBody = message.body.trim();
-        const [senderName, chatBody] = messageBody.split(": ");
+        const messageBody = JSON.parse(message.body.trim());
+        const {senderName, chatBody} = messageBody;
         const newMessage = {senderName: senderName.trim(), chatBody: chatBody.trim()};
         addMessage(newMessage);
         console.log("Added message: ", newMessage);
@@ -31,9 +34,12 @@ const UseWebSocket = () => {
 
   const joinChatRoom = useCallback(() => {
     if(stompClient.current && stompClient.current.connected && fetchedUser && fetchedUser?.nickname) {
-      const chatMessage = `${fetchedUser.nickname}: 입장하였습니다.`;
+      const chatMessage = {
+        senderName: fetchedUser.nickname,
+        chatBody: "입장하였습니다."
+      };
       console.log("Joining chat room with message: ", chatMessage);
-      stompClient.current.send("pub/join", {}, chatMessage);
+      stompClient.current.send("/pub/join", {}, JSON.stringify(chatMessage));
     }
   }, [fetchedUser]);
 
@@ -42,23 +48,20 @@ const UseWebSocket = () => {
       stompClient.current.disconnect(() => {
         console.log("Disconnected");
       });
+      stompClient.current = null;
     }
   }, []);
 
+  // 이 부분 문제있음 이따가 확인하기
   const sendMessage = (inputValue) => {
-    console.log("Sending message: ");
     if (stompClient.current && stompClient.current.connected) {
       const senderName = fetchedUser.nickname;
-      const chatMessage = `${senderName}: ${inputValue}`;
-      stompClient.current.send("/pub/chat", {}, chatMessage);
-      
-      // stompClient.current.send("/pub/chat", {}, JSON.stringify(payload));
+      const chatMessage = {
+        senderName,
+        chatBody: inputValue
+      };
+      stompClient.current.send("/pub/chat", {}, JSON.stringify(chatMessage));
       console.log("Sending message: ", chatMessage);
-      // const newMessage = {
-      //   senderName,
-      //   chatBody: inputValue,
-      //   currentUser: true
-      // }
       addMessage(chatMessage);
       setInputValue('');
     }
@@ -71,7 +74,7 @@ const UseWebSocket = () => {
       console.log("Fetched chat history: ", chatHistory);
 
       chatHistory.forEach(message => {
-        const [senderName, chatBody] = message.split(": ");
+        const [senderName, chatBody] = JSON.parse(message);
         const newMessage = {
           senderName: senderName.trim(), 
           chatBody: chatBody.trim(), 
@@ -85,18 +88,7 @@ const UseWebSocket = () => {
     }  
   }, [addMessage, fetchedUser]);
 
-  // 연결을 생성하고 해제하는 로직
-  useEffect(() => {
-    if(fetchedUser && fetchedUser.nickname) {
-      fetchChatHistory();
-      joinChatRoom();
-    }
-    return () => {
-      disconnect();
-    };
-  }, [fetchedUser, connect, fetchChatHistory, joinChatRoom, disconnect]);
-
-  return { sendMessage, connect, disconnect };
+  return { sendMessage, connect, disconnect, joinChatRoom, fetchChatHistory };
 }
 
 export default UseWebSocket;
