@@ -31,7 +31,7 @@ const Board = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/boards?page=0&pageSize=10&direction=DESC&sortBy=boardCreateDate');
+      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/boards?page=0&pageSize=10&direction=DESC&sortBy=boardCreateDate',  { withCredentials: true });
       setPosts(response.data);
       setDisplayedPosts(response.data.slice(0, postsPerPage));
       setTotalPages(Math.ceil(response.data.length / postsPerPage));
@@ -219,7 +219,7 @@ const Board = () => {
               </div>
               {visiblePost !== post.boardId && (
                 <div className={styles.postMeta}>
-                  <span className={styles.likes}>추천 {post.likesCount}</span>&nbsp;&nbsp;
+                  <span className={styles.likes}>추천 {post.likesCount}</span>  
                   <span className={styles.comments}>댓글 {post.comments.length}</span>
                 </div>
               )}
