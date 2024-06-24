@@ -17,7 +17,7 @@ import { MessageProvider } from './chat/MessageProvider.js';
 import EditorPage from './ide/EditorPage.js';
 import Chat from './chat/Chat.js';
 import DeleteAccount from './user/DeleteAccount.js';
-import MainPage from './main/mainPage.js';
+import MainPage from './main/MainPage.js';
 
 function App() {
   return (
