@@ -4,7 +4,7 @@ import './Sidebar.css';
 import { useMessage } from '../../chat/MessageProvider';
 import { ChatIcon } from '../../img/ChatIcon';
 import UseWebSocket from '../../chat/hooks/UseWebSocket';
-import { useAuth } from '../user/auth/AuthContext';
+import { useAuth } from '../../user/auth/AuthContext';
 
 function Sidebar() {
   const { user } = useAuth();
