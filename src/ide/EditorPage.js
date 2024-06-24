@@ -30,7 +30,7 @@ function EditorPage() {
 
     console.log("user :", user);
     console.log("user dbid :", user.id);
-    axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/quiz/detail/${id}?userId=${user.id}`)
+    axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/quiz/detail/${id}?userId=${user.id}`, { withCredentials: true } )
       .then(response => {
         console.log('response :', response);
         const data = response.data;
@@ -58,7 +58,7 @@ function EditorPage() {
         // id가 중복되는데 어떻게 변수를 지정해야할지
       };
       console.log("reqData :", requestData);
-      axios.post("https://k618de24a93cca.user-app.krampoline.com/api/ide/run", requestData)
+      axios.post("https://k618de24a93cca.user-app.krampoline.com/api/ide/run", requestData, { withCredentials: true })
         .then(response => {
           const data = response.data;
           console.log("response data:", data);
