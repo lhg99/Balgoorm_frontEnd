@@ -20,7 +20,7 @@ function QuizList() {
     const fetchData = async () => {
         console.log(user);
       try {
-        const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/quiz/list/${page}?userId=${user.id}`);
+        const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/quiz/list/${page}?userId=${user.id}', {}, { withCredentials: true });
         console.log(response.data)
         setQuiz(response.data);
       } catch (error) {
