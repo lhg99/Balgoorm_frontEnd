@@ -26,8 +26,10 @@ function Admin() {
 
   const handleDeleteUser = async (user) => {
     try {
-      await axios.delete(`https://k618de24a93cca.user-app.krampoline.com/api/deleteUser/${user.userId}`, {data: {userId: user.userId}});
-      Cookies.remove('token');
+      await axios.delete(`https://k618de24a93cca.user-app.krampoline.com/api/deleteUser/${user.userId}`, {
+        data: { userId: user.userId },
+        withCredentials: true
+      });      Cookies.remove('token');
       Cookies.remove('role');
       alert("계정이 삭제되었습니다.");
       fetchAllUsers();

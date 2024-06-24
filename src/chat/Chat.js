@@ -7,47 +7,55 @@ import React, { useCallback, useEffect } from 'react'
 import { Button, Container, Form } from 'react-bootstrap';
 import { useMessage } from './MessageProvider';
 import './Chat.css'
-import { useAuth } from '../user/auth/AuthContext';
 import UseWebSocket from './hooks/UseWebSocket';
 
 function Chat() {
-  const { fetchedUser } = useAuth();
-  const { message, addMessage, handleKeyDown, setInputValue, inputValue} = useMessage();
-  const { sendMessage } = UseWebSocket();
-
-  const handleSendMessage = useCallback(() => {
-    if (inputValue.trim() !== '') {
-      const newMessage = {
-        senderName: fetchedUser.nickname,
-        chatBody: inputValue,
-        currentUser: true
-      };
-      sendMessage(inputValue); // 메시지 전송
-      addMessage(newMessage);
-      setInputValue(''); // 입력 필드 초기화
-    }
-  }, [inputValue, addMessage, setInputValue, fetchedUser, sendMessage]);
+  const { message, setInputValue, inputValue} = useMessage();
+  const { sendMessage, connect, disconnect, fetchChatHistory, joinChatRoom, chatCount } = UseWebSocket();
 
   useEffect(() => {
-    console.log("Current messages: ", message); // 상태 변경 시 메시지 로그
-  }, [message]);
+    connect();
+    fetchChatHistory();
+    return() => {
+      disconnect();
+    }
+  }, [connect, disconnect, joinChatRoom, fetchChatHistory]);
+
+  const handleSendMessage = useCallback(() => {
+    if (inputValue.trim() !== "") {
+      sendMessage(inputValue);
+      setInputValue(""); // 메시지 전송 후 입력 필드 초기화
+    }
+  }, [inputValue, sendMessage, setInputValue]);
   
   return (
-  <div>
-    <Container className='chatting-container'>
-      {message.map((msg, index) => (
-        <div className={`message-box ${msg.currentUser ? 'right' : 'left'}`} key={index}>
-          {msg.currentUser ? (
-            <>
-              <div className='message-content'>{msg.chatBody}</div>
-              <span className='user-badge'>{msg.senderName}</span>
-            </>
-          ) : (
-            <>
-              <span className='user-badge'>{msg.senderName}</span>
-              <div className='message-content'>{msg.chatBody}</div>
-            </>
-          )}
+    <div>
+      <div>총 회원수: {chatCount}명</div>
+      <Container className='chatting-container'>
+        {message.map((msg, index) => (
+          <div className={`message-box ${msg.currentUser ? 'right' : 'left'}`} key={index}>
+            {msg.currentUser ? (
+              <>
+              <div className='time-wrapper right-time'>
+                {typeof msg.chatHour === 'string' && <div className='message-time'>{msg.chatHour}:</div>}
+                {typeof msg.chatMin === 'string' && <div className='message-time'>{msg.chatMin}:</div>}
+                {typeof msg.chatSec === 'string' && <div className='message-time'>{msg.chatSec}</div>}
+              </div>
+                <div className='message-content'>{msg.chatBody}</div>
+                <span className='user-badge'>{msg.senderName}</span>
+              </>
+            ) : (
+              <>
+                <span className='user-badge'>{msg.senderName}</span>
+                <div className='message-content'>{msg.chatBody}</div>
+                <div className='time-wrapper left-time'>
+                {typeof msg.chatHour === 'string' && <div className='message-time'>{msg.chatHour}:</div>}
+                {typeof msg.chatMin === 'string' && <div className='message-time'>{msg.chatMin}:</div>}
+                {typeof msg.chatSec === 'string' && <div className='message-time'>{msg.chatSec}</div>}
+                </div>
+              </>  
+              )
+            } 
         </div>
       ))}
       <Form className='chatting-form mt-3'>
@@ -57,7 +65,12 @@ function Chat() {
           placeholder="메시지 입력" 
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)} 
-          onKeyDown={handleKeyDown} 
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              handleSendMessage();
+            }
+          }} 
           />
           </Form.Group>
           <Button variant="primary" className='button-inline' onClick={handleSendMessage}>전송</Button>
