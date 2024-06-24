@@ -11,7 +11,6 @@ import ProtectedRoute from './user/auth/ProtectedRoute.js';
 import MyPage from './user/mypage/MyPage.js';
 import Admin from './user/admin/Admin.js';
 import QuizList from './quiz/QuizList.js';
-import TestEditorPage from './ide/EditorPage.js';
 import UseWebSocket from './chat/hooks/UseWebSocket.js';
 import { MessageProvider } from './chat/MessageProvider.js';
 import EditorPage from './ide/EditorPage.js';
