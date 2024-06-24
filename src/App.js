@@ -37,7 +37,7 @@ function App() {
                   <Route path="/delete" element={<ProtectedRoute><DeleteAccount /></ProtectedRoute>} />
                   <Route path="/quizlist" element={<ProtectedRoute><QuizList /></ProtectedRoute>} />
                   <Route path="/quiz/detail/:id" element={<ProtectedRoute><EditorPage /></ProtectedRoute>} />
-                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
                 </Routes>
               </div>
             </div>
