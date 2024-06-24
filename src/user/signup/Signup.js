@@ -9,15 +9,18 @@ import { Button, Container, Form } from "react-bootstrap";
 import logo1 from "../../img/Logo1.png";
 import './Signup.css'
 import { useAuth } from "../auth/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Signup() {
 
   const { register, watch, handleSubmit, formState: {errors} } = useForm();
   const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const submitForm = async (data) => {
     try {
       await signup(data);
+      navigate('/login');
     } catch (error) {
       console.error("error:", error);
     }
