@@ -208,7 +208,7 @@
 
 .editDeleteButtons {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 10px;
 }
 
@@ -219,10 +219,10 @@
   border: 1px solid #000000;
   border-radius: 4px;
   cursor: pointer;
+  margin-left: 10px;  /* 버튼 간의 간격 추가 */
 }
 
 .editButton:hover, .deleteButton:hover, .confirmButton:hover, .cancelButton:hover {
   background-color: #000000;
   color: #ffffff;
 }
-

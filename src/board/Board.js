@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import 'moment/locale/ko';  
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import LikeButton from './LikeButton';
 import CommentSection from './CommentSection';
 import BoardWrite from './BoardWrite';
 import BoardPagination from './BoardPagination';
-import SearchBar from './SearchBar'; // SearchBar 컴포넌트 불러오기
+import SearchBar from './SearchBar';
 import styles from './Board.module.css';
 import { useAuth } from '../user/auth/AuthContext';
-moment.locale('ko');
+
+moment.locale('ko');  
 
 const Board = () => {
   const { user } = useAuth();
@@ -29,18 +31,16 @@ const Board = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/boards?page=0&pageSize=10&direction=DESC&sortBy=likes');
+      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/boards?page=0&pageSize=10&direction=DESC&sortBy=boardCreateDate');
       setPosts(response.data);
       setDisplayedPosts(response.data.slice(0, postsPerPage));
       setTotalPages(Math.ceil(response.data.length / postsPerPage));
     } catch (error) {
-      console.error('Error fetching posts:', error);
       const tempPost = {
         boardId: 'temp-id',
         boardTitle: '임시 게시물 제목',
         boardContent: '서버에 연결할 수 없어 임시로 추가된 게시물입니다.',
         category: '기타',
-        userId: 'admin',
         nickname: '관리자',
         boardCreateDate: new Date().toISOString(),
         views: 0,
@@ -55,6 +55,13 @@ const Board = () => {
 
   useEffect(() => {
     fetchPosts();
+
+    // localStorage에서 선택된 카테고리 값을 불러오기
+    const savedCategory = localStorage.getItem('selectedCategory');
+    if (savedCategory) {
+      setSelectedCategory(savedCategory);
+      filterPosts(savedCategory);
+    }
   }, []);
 
   const handleCategoryChange = (e) => {
@@ -62,6 +69,9 @@ const Board = () => {
     setSelectedCategory(category);
     filterPosts(category);
     setCurrentPage(1);
+
+    // localStorage에 선택된 카테고리 값을 저장
+    localStorage.setItem('selectedCategory', category);
   };
 
   const filterPosts = (category) => {
@@ -71,21 +81,27 @@ const Board = () => {
   };
 
   const handleSearch = (searchTerm) => {
-    const lowercasedSearchTerm = searchTerm.toLowerCase();
-    const filteredPosts = posts.filter(post => 
-      (post.boardTitle && post.boardTitle.toLowerCase().includes(lowercasedSearchTerm)) ||
-      (post.boardContent && post.boardContent.toLowerCase().includes(lowercasedSearchTerm)) ||
-      // (post.nickname && post.nickname.toLowerCase().includes(lowercasedSearchTerm)) ||
-      (post.comments && post.comments.some(comment => comment.content && comment.content.toLowerCase().includes(lowercasedSearchTerm)))
-    );
+    const filteredPosts = posts.filter(post => post.boardTitle.includes(searchTerm));
     setDisplayedPosts(filteredPosts.slice(0, postsPerPage));
     setTotalPages(Math.ceil(filteredPosts.length / postsPerPage));
     setCurrentPage(1);
   };
-  
 
   const togglePostVisibility = (postId) => {
     setVisiblePost(visiblePost === postId ? null : postId);
+  };
+
+  const handleLikeToggle = async (postId, isLiked) => {
+    try {
+      const response = await axios.post(`https://k618de24a93cca.user-app.krampoline.com/api/posts/${postId}/like`, { isLiked });
+      const updatedPosts = posts.map(post =>
+        post.boardId === postId ? { ...post, likesCount: response.data.likesCount } : post
+      );
+      setPosts(updatedPosts);
+      filterPosts(selectedCategory);
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
   };
 
   const handleCommentUpdate = async (postId) => {
@@ -97,7 +113,6 @@ const Board = () => {
       setPosts(updatedPosts);
       filterPosts(selectedCategory);
     } catch (error) {
-      console.error('Error updating comments:', error);
     }
   };
 
@@ -119,16 +134,36 @@ const Board = () => {
     setIsFormOpen(true);
   };
 
+  
+  // 삭제
   const handleDeleteClick = (post) => {
     setPostToDelete(post);
     setIsModalOpen(true);
   };
-
-  const handleConfirmDelete = () => {
-    setPosts(posts.filter(post => post.boardId !== postToDelete.boardId));
-    setDisplayedPosts(displayedPosts.filter(post => post.boardId !== postToDelete.boardId));
-    setIsModalOpen(false);
-    setPostToDelete(null);
+  
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await axios.delete(`https://k618de24a93cca.user-app.krampoline.com/api/boards/${postToDelete.boardId}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        withCredentials: true
+      });
+      
+  
+      await fetchPosts(); 
+      // window.location.reload();  // 페이지 새로고침
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      if (error.response) {
+        // alert(`Error: ${error.response.status} - ${error.response.data.message || '게시글 삭제 중 오류가 발생했습니다.'}`);
+      } else {
+        alert('네트워크 오류가 발생했습니다. 다시 시도해 주세요.');
+      }
+    } finally {
+      setIsModalOpen(false);
+      setPostToDelete(null);
+    }
   };
 
   const handleCancelDelete = () => {
@@ -152,20 +187,6 @@ const Board = () => {
     setShowLoginMessage(false);
   };
 
-  const handleLikeToggle = (postId, isLiked) => {
-    const updatedPosts = posts.map(post => {
-      if (post.boardId === postId) {
-        return {
-          ...post,
-          likesCount: isLiked ? post.likesCount + 1 : post.likesCount - 1,
-          isLiked: isLiked
-        };
-      }
-      return post;
-    });
-    setPosts(updatedPosts);
-  };
-
   return (
     <div className={styles.boardContainer}>
       <h2 className={styles.boardTitle}>토론</h2>
@@ -174,13 +195,13 @@ const Board = () => {
         <div className={styles.categoryFilter}>
           <select onChange={handleCategoryChange} value={selectedCategory} className={styles.categorySelect}>
             <option value="All">All</option>
-            <option value="Python">Python</option>
-            <option value="C">C</option>
             <option value="Java">Java</option>
+            <option value="Python">Python</option>
+            <option value="C++">C++</option>
             <option value="기타">기타</option>
           </select>
         </div>
-        <SearchBar onSearch={handleSearch} /> {/* SearchBar 컴포넌트 사용 */}
+        <SearchBar onSearch={handleSearch} />
       </div>
 
       <ul className={styles.postList}>
@@ -198,7 +219,6 @@ const Board = () => {
               </div>
               {visiblePost !== post.boardId && (
                 <div className={styles.postMeta}>
-                  <span className={styles.views}>조회수 {post.views}</span>&nbsp;
                   <span className={styles.likes}>추천 {post.likesCount}</span>&nbsp;&nbsp;
                   <span className={styles.comments}>댓글 {post.comments.length}</span>
                 </div>
@@ -207,23 +227,12 @@ const Board = () => {
             {visiblePost === post.boardId && (
               <div className={styles.postContent}>
                 <p>{post.boardContent}</p>
-                <div className={styles.postMeta}>
-                  <LikeButton 
-                    postId={post.boardId} 
-                    initialLikesCount={post.likesCount} 
-                    initialIsLiked={post.isLiked || false} 
-                    onLikeToggle={handleLikeToggle} 
-                  />
-                  <span className={styles.views}>조회수 {post.views}</span>&nbsp;
-                  <span className={styles.comments}>댓글 {post.comments.length}</span>
+                <LikeButton postId={post.boardId} isLiked={false} onLikeToggle={handleLikeToggle} />
+                <CommentSection postId={post.boardId} userId={user ? user.id : null} />
+                <div className={styles.editDeleteButtons}>
+                  <button onClick={() => handleEditButtonClick(post)} className={styles.editButton}>수정</button>
+                  <button onClick={() => handleDeleteClick(post)} className={styles.deleteButton}>삭제</button>
                 </div>
-                <CommentSection postId={post.boardId} comments={post.comments} onCommentUpdate={handleCommentUpdate} />
-                {user && post.userId === user.userId && (
-                  <div className={styles.editDeleteButtons}>
-                    <button onClick={() => handleEditButtonClick(post)} className={styles.editButton}>수정</button>
-                    <button onClick={() => handleDeleteClick(post)} className={styles.deleteButton}>삭제</button>
-                  </div>
-                )}
               </div>
             )}
           </li>
