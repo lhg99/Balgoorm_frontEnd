@@ -15,11 +15,15 @@ function Chat() {
 
   useEffect(() => {
     connect();
-    fetchChatHistory();
     return() => {
       disconnect();
     }
-  }, [connect, disconnect, joinChatRoom, fetchChatHistory]);
+  }, [connect, disconnect]);
+
+  useEffect(() => {
+    fetchChatHistory();
+  }, [fetchChatHistory]);
+  
 
   const handleSendMessage = useCallback(() => {
     if (inputValue.trim() !== "") {
