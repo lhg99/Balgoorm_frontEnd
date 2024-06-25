@@ -108,7 +108,7 @@ const Board = () => {
 
   const handleCommentUpdate = async (postId) => {
     try {
-      const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/boards/${postId}`);
+      const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/boards/${postId}`, { withCredentials: true });
       const updatedPosts = posts.map(post =>
         post.boardId === postId ? response.data : post
       );
