@@ -23,7 +23,6 @@ function Chat() {
   useEffect(() => {
     fetchChatHistory();
   }, [fetchChatHistory]);
-  
 
   const handleSendMessage = useCallback(() => {
     if (inputValue.trim() !== "") {

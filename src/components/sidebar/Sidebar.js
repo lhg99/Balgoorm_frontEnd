@@ -13,13 +13,6 @@ function Sidebar() {
   const { message } = useMessage();
   const isAdmin = user && user.role === 'ADMIN';
   const isNotChatPage = location.pathname !== '/chat';
-  const { connect, joinChatRoom, fetchChatHistory } = UseWebSocket();
-
-  const handleConnect = () => {
-    // connect();
-    // joinChatRoom();
-    // fetchChatHistory();
-  }
 
   return (
     <div className="sidebar">
@@ -32,7 +25,7 @@ function Sidebar() {
         <ul>
           <li><Link to="/">메인 화면</Link></li>
           <li><Link to="/quizlist">✏️문제 풀기</Link></li>
-          <li><Link onClick={handleConnect} to="/chat">📭채팅</Link></li>
+          <li><Link to="/chat">📭채팅</Link></li>
           {isAdmin && (
             <div className="admin-menu">
               <li><Link to="/admin">관리자 메뉴</Link></li>
@@ -48,7 +41,7 @@ function Sidebar() {
               <div className="chat-header">
                 채팅헤더
                 <div className='header-right'>
-                  <Link to='/chat' onClick={handleConnect}>
+                  <Link to='/chat'>
                     <ChatIcon />
                   </Link>
                 </div>

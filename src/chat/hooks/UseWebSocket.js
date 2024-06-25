@@ -18,53 +18,38 @@ const UseWebSocket = () => {
     });
   }
 
-  // 채팅방에 입장하는 함수
-  const joinChatRoom = useCallback(() => {
-    if (stompClient.current && stompClient.current.connected) {
-      stompClient.current.send(
-        "/api/pub/join",
-        {},
-        JSON.stringify({
-          senderName : fetchedUser.nickname,
-          chatBody : ""
-        })
-      );
-      // 입장 메시지를 로컬 상태에 추가
-      addMessage({
-        senderName: fetchedUser.nickname,
-        chatBody: fetchedUser.nickname + "님이 입장하셨습니다.",
-        currentUser: true
-      });
-
-    }
-  }, [addMessage, fetchedUser?.nickname]);
-
-    // 웹소켓 연결 해제 함수
-  const disconnect = useCallback(() => {
-    console.log("웹소켓 연결해제")
-    if (stompClient.current && stompClient.current.connected) {
-      stompClient.current.send(
-        "/api/pub/disconnect",
-        {},
-        JSON.stringify({
-          senderName : fetchedUser.nickname,
-          chatBody : ""
-        })
-      );
-
-      stompClient.current.disconnect();
-    }
-  }, []);
+      // 채팅방에 입장하는 함수
+      const joinChatRoom = useCallback(() => {
+        if (stompClient.current && stompClient.current.connected) {
+          stompClient.current.send(
+            "/api/pub/join",
+            {},
+            JSON.stringify({
+              senderName : fetchedUser.nickname,
+              chatBody : ""
+            })
+          );
+          // 입장 메시지를 로컬 상태에 추가
+          addMessage({
+            senderName: fetchedUser.nickname,
+            chatBody: fetchedUser.nickname + "님이 입장하셨습니다.",
+            currentUser: true
+          });
+    
+        }
+      }, [addMessage, fetchedUser?.nickname]);
   
 
   // 웹소켓 연결 함수
   const connect = useCallback(() => {
-    const socket = new SockJS("https://k618de24a93cca.user-app.krampoline.com/api/chat", {withCredentials:true}); // SockJS를 이용한 소켓 생성
+    const socket = new SockJS("https://k618de24a93cca.user-app.krampoline.com//api/chat", {withCredentials:true}); // SockJS를 이용한 소켓 생성
     stompClient.current = Stomp.over(socket); // Stomp 클라이언트 생성 및 소켓 연결
 
     //실제 연결 시도 하는 부분 
     stompClient.current.connect({}, () => {
+      console.log("웹소켓 연결@@")
       // joinChatRoom();
+
       stompClient.current.subscribe(
         "/api/sub/chat",
         (message) => {
@@ -125,17 +110,35 @@ const UseWebSocket = () => {
             setChatCount(parseInt(messageBody, 10));
           });
 
-          async function waitTime(){
-            await wait(500);
-            joinChatRoom();
-          }
-          waitTime();
+          // async function waitTime(){
+          //   await wait(500);
+          //   joinChatRoom();
+          // }
+          // waitTime();
+          joinChatRoom();
         }, (error) => {
-          console.error('Connection error: ', error); // 연결 실패 시 에러 처리
+          console.error('연결오류@@@@@: ', error); // 연결 실패 시 에러 처리
         }
       );
     }, [addMessage, joinChatRoom, fetchedUser?.nickname]
   );
+
+      // 웹소켓 연결 해제 함수
+    const disconnect = useCallback(() => {
+      console.log("웹소켓 연결해제")
+      if (stompClient.current && stompClient.current.connected) {
+        stompClient.current.send(
+          "/api/pub/disconnect",
+          {},
+          JSON.stringify({
+            senderName : fetchedUser.nickname,
+            chatBody : ""
+          })
+        );
+  
+        stompClient.current.disconnect();
+      }
+    }, []);
 
   const sendMessage = () => {
     if (stompClient.current && stompClient.current.connected) {
@@ -166,11 +169,10 @@ const UseWebSocket = () => {
   // 채팅 히스토리 가져오기 함수
   const fetchChatHistory = useCallback(async () => {
     try {
-      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/history', {withCredentials:true}); // 채팅 히스토리 요청
+      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com//api/history', {withCredentials:true}); // 채팅 히스토리 요청
       const chatHistory = response.data.reverse(); // 응답 데이터 저장 및 역순 정렬
 
       console.log("채팅 히스토리", chatHistory)
-      console.log("senderName: " , )
 
       if (!fetchedUser?.nickname) {
         return
