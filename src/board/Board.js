@@ -27,11 +27,14 @@ const Board = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [showLoginMessage, setShowLoginMessage] = useState(false);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+
   const postsPerPage = 5;
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/boards?page=0&pageSize=10&direction=DESC&sortBy=boardCreateDate');
+      const response = await axios.get('https://k618de24a93cca.user-app.krampoline.com/api/boards?page=0&pageSize=10&direction=DESC&sortBy=boardCreateDate',  { withCredentials: true });
       setPosts(response.data);
       setDisplayedPosts(response.data.slice(0, postsPerPage));
       setTotalPages(Math.ceil(response.data.length / postsPerPage));
@@ -113,6 +116,36 @@ const Board = () => {
       setPosts(updatedPosts);
       filterPosts(selectedCategory);
     } catch (error) {
+    }
+  };
+
+  const openCommentModal = (commentId) => {
+    setCommentToDelete(commentId);
+    setIsCommentModalOpen(true);
+  };
+  
+  const closeCommentModal = () => {
+    setCommentToDelete(null);
+    setIsCommentModalOpen(false);
+  };
+  
+  const confirmDeleteComment = async () => {
+    if (commentToDelete !== null) {
+      try {
+        await axios.delete(`https://k618de24a93cca.user-app.krampoline.com/api/board/${visiblePost}/comment/${commentToDelete}`, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        });
+  
+        // 댓글 삭제 후 댓글 목록을 업데이트합니다.
+        handleCommentUpdate(visiblePost);
+        setCommentToDelete(null);
+        setIsCommentModalOpen(false);
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+      }
     }
   };
 
@@ -219,7 +252,7 @@ const Board = () => {
               </div>
               {visiblePost !== post.boardId && (
                 <div className={styles.postMeta}>
-                  <span className={styles.likes}>추천 {post.likesCount}</span>&nbsp;&nbsp;
+                  <span className={styles.likes}>추천 {post.likesCount}</span>  
                   <span className={styles.comments}>댓글 {post.comments.length}</span>
                 </div>
               )}
@@ -228,7 +261,11 @@ const Board = () => {
               <div className={styles.postContent}>
                 <p>{post.boardContent}</p>
                 <LikeButton postId={post.boardId} isLiked={false} onLikeToggle={handleLikeToggle} />
-                <CommentSection postId={post.boardId} userId={user ? user.id : null} />
+                <CommentSection
+                    postId={post.boardId}
+                    handleCommentUpdate={handleCommentUpdate}
+                    openCommentModal={openCommentModal} // 추가된 부분
+                  />
                 <div className={styles.editDeleteButtons}>
                   <button onClick={() => handleEditButtonClick(post)} className={styles.editButton}>수정</button>
                   <button onClick={() => handleDeleteClick(post)} className={styles.deleteButton}>삭제</button>
@@ -268,6 +305,16 @@ const Board = () => {
             <p>게시글을 삭제하시겠습니까?</p>
             <button onClick={handleConfirmDelete} className={styles.confirmButton}>삭제</button>
             <button onClick={handleCancelDelete} className={styles.cancelButton}>취소</button>
+          </div>
+        </div>
+      )}
+
+      {isCommentModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <p>댓글을 삭제하시겠습니까?</p>
+            <button onClick={confirmDeleteComment} className={styles.confirmButton}>삭제</button>
+            <button onClick={closeCommentModal} className={styles.cancelButton}>취소</button>
           </div>
         </div>
       )}
