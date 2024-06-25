@@ -12,12 +12,11 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 
 function Admin() {
-  const { user, allUsers, fetchAllUsers, fetchCount, isLoading } = useAuth();
-  const [userCount, setUserCount] = useState(0);
+  const { user, userCount, allUsers, fetchAllUsers, fetchCount, isLoading } = useAuth();
 
   useEffect(() => {
     fetchAllUsers();
-    fetchCount().then(count => setUserCount(count));
+    fetchCount();
   }, []);
 
   if(isLoading) {

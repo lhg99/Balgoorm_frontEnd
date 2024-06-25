@@ -16,9 +16,9 @@ function Sidebar() {
   const { connect, joinChatRoom, fetchChatHistory } = UseWebSocket();
 
   const handleConnect = () => {
-    connect();
-    joinChatRoom();
-    fetchChatHistory();
+    // connect();
+    // joinChatRoom();
+    // fetchChatHistory();
   }
 
   return (
