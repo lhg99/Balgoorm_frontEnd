@@ -5,19 +5,16 @@ import { faPaperPlane, faUser, faTrash } from '@fortawesome/free-solid-svg-icons
 import styles from './CommentSection.module.css';
 import { useAuth } from '../user/auth/AuthContext';
 
-const CommentSection = ({ postId, handleCommentUpdate, openCommentModal }) => {
+const CommentSection = ({ postId, handleCommentUpdate }) => {
   const { user } = useAuth();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/board/${postId}/comments`, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        withCredentials: true
-      });
+      const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/board/${postId}/comments`);
       setComments(response.data);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -43,16 +40,16 @@ const CommentSection = ({ postId, handleCommentUpdate, openCommentModal }) => {
     };
 
     try {
-      await axios.post(`https://k618de24a93cca.user-app.krampoline.com/api/board/${postId}/comment`, postData, {
+      const response = await axios.post(`https://k618de24a93cca.user-app.krampoline.com/api/board/${postId}/comment`, postData, {
         headers: {
           'Content-Type': 'application/json'
         },
         withCredentials: true
       });
 
-      fetchComments(); // 댓글 작성 후 최신 댓글 데이터를 다시 가져옵니다.
+      setComments([...comments, response.data]);
       setNewComment('');
-      handleCommentUpdate(postId); // 댓글 작성 후 handleCommentUpdate 호출
+      handleCommentUpdate(postId); // 댓글 등록 후 댓글 목록 갱신
     } catch (error) {
       console.error('댓글 등록 중 오류 발생:', error);
       if (error.response) {
@@ -63,8 +60,34 @@ const CommentSection = ({ postId, handleCommentUpdate, openCommentModal }) => {
     }
   };
 
-  const handleDeleteClick = (commentId) => {
-    openCommentModal(commentId);
+  const confirmDeleteComment = async () => {
+    if (commentToDelete !== null) {
+      try {
+        await axios.delete(`https://k618de24a93cca.user-app.krampoline.com/api/board/${postId}/comment/${commentToDelete}`, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        });
+
+        setComments(comments.filter(comment => comment.commentId !== commentToDelete));
+        setCommentToDelete(null);
+        setIsModalOpen(false);
+        handleCommentUpdate(postId); // 댓글 삭제 후 댓글 목록 갱신
+      } catch (error) {
+        console.error('Error deleting comment:', error);
+      }
+    }
+  };
+
+  const openModal = (commentId) => {
+    setCommentToDelete(commentId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setCommentToDelete(null);
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -82,7 +105,7 @@ const CommentSection = ({ postId, handleCommentUpdate, openCommentModal }) => {
               {comment.userId === user?.id && (
                 <button
                   className={styles.deleteButton}
-                  onClick={() => handleDeleteClick(comment.commentId)}
+                  onClick={() => openModal(comment.commentId)}
                 >
                   <FontAwesomeIcon icon={faTrash} />
                 </button>
@@ -108,6 +131,17 @@ const CommentSection = ({ postId, handleCommentUpdate, openCommentModal }) => {
           </button>
         </div>
       </form>
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <p>댓글을 삭제하시겠습니까?</p>
+            <div className={styles.modalButtons}>
+              <button onClick={confirmDeleteComment} className={styles.confirmButton}>삭제</button>
+              <button onClick={closeModal} className={styles.cancelButton}>취소</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

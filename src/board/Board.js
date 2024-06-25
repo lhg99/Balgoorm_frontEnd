@@ -29,7 +29,6 @@ const Board = () => {
   const [showLoginMessage, setShowLoginMessage] = useState(false);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState(null);
-
   const postsPerPage = 5;
 
   const fetchPosts = async () => {
@@ -261,11 +260,11 @@ const Board = () => {
               <div className={styles.postContent}>
                 <p>{post.boardContent}</p>
                 <LikeButton postId={post.boardId} isLiked={false} onLikeToggle={handleLikeToggle} />
-                <CommentSection
-                    postId={post.boardId}
-                    handleCommentUpdate={handleCommentUpdate}
-                    openCommentModal={openCommentModal} // 추가된 부분
-                  />
+                <CommentSection 
+                  postId={post.boardId} 
+                  handleCommentUpdate={handleCommentUpdate} 
+                  openCommentModal={openCommentModal}
+                />
                 <div className={styles.editDeleteButtons}>
                   <button onClick={() => handleEditButtonClick(post)} className={styles.editButton}>수정</button>
                   <button onClick={() => handleDeleteClick(post)} className={styles.deleteButton}>삭제</button>
