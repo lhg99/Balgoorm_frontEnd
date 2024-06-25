@@ -14,7 +14,7 @@ const CommentSection = ({ postId, handleCommentUpdate }) => {
 
   const fetchComments = async () => {
     try {
-      const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/board/${postId}/comments`);
+      const response = await axios.get(`https://k618de24a93cca.user-app.krampoline.com/api/board/${postId}/comments`, { withCredentials: true});
       setComments(response.data);
     } catch (error) {
       console.error('Error fetching comments:', error);
