@@ -1,15 +1,15 @@
-# BalgoormIDE(5/28~6/25)
+# BalgoormIDE
 구름(goorm) 풀스택 개발자 성장 과정 7회차 발구름 조의 Web IDE 제작 프로젝트입니다.
 
 
 <br>
 
 
-## 프로젝트 설명
-개발자가 되고 싶어하는 사람들이 처음 코딩을 시작할 때 코딩에 흥미를 줄 수 있도록 퀴즈 형식으로
+개발자가 되고 싶어하는 사람들이 처음 코딩을 시작할 때 코딩에 흥미를 줄 수 있도록
 
 
-문제를 풀어 코딩 능력을 향상시키기 위해 제작한 사이트 입니다.
+퀴즈 형식으로 문제를 풀어 코딩 능력을 향상시키기 위해 제작한 사이트 입니다.
+
 
 <br>
 
@@ -38,10 +38,12 @@
 개발기간: 2023.05 ~ 2023.06
 
 
-<div><h3>기술 스택</h3></div>
+<br>
 
+
+사용 기술스택
 <div> 
-  
+
   <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> 
   <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> 
   <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
@@ -52,8 +54,7 @@
   <img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white"> 
   <img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"> 
   <img src="https://img.shields.io/badge/amazonaws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white">
-  <br>
- 
+
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
   <br>
@@ -67,6 +68,11 @@
 
 
 저는 로그인, 회원가입, 마이페이지, 관리자 페이지를 작성하였고, 채팅 페이지를 개발했습니다.
+
+
+- react-hook-form 라이브러리로 회원가입 시 이메일 형식, 비밀번호를 제대로 입력했는지(비밀번호 확인) 검증하였습니다.
+- Axios 라이브러리로 회원가입, 로그인, 정보 가져오기 등 다양한 api 처리를 했습니다.
+- sockJS와 stomp 라이브러리를 통해 웹 소켓 연결, 구독 등 채팅과 관련된 작업을 진행했습니다.
 
 
 <br>
