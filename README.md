@@ -11,11 +11,12 @@
 퀴즈 형식으로 문제를 풀어 코딩 능력을 향상시키기 위해 제작한 사이트 입니다.
 
 
+<img src="./images/main.png">
 <br>
 
 
 ## 사용법
-<h4>배포 주소: https://k33d397de87b1a.user-app.krampoline.com/ </h4>
+[배포 주소 바로가기](https://k33d397de87b1a.user-app.krampoline.com/)
 
 
 <br>
