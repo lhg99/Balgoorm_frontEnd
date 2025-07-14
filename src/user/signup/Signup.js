@@ -2,89 +2,120 @@
  * 회원가입 소스코드
  */
 
-import React from "react";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Button, Container, Form } from "react-bootstrap";
 import logo1 from "../../img/Logo1.png";
-import './Signup.css'
+import "./Signup.css";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
-
-  const { register, watch, handleSubmit, formState: {errors} } = useForm();
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const { signup } = useAuth();
   const navigate = useNavigate();
 
   const submitForm = async (data) => {
     try {
       await signup(data);
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
       console.error("error:", error);
     }
-  }
-  
+  };
+
   return (
-  <div>
-    <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100">
-      <div className="text-center mb-4">
-        <img src={logo1} alt="BalGoorm Logo" className="logo-img" />
-        <h1 className="mt-2 logo-text">BalGoorm</h1>
-      </div>
-      
-      <Form onSubmit={handleSubmit(submitForm)} className="w-100 signup-form" >
-        <Form.Group>
-          <Form.Label>아이디</Form.Label>
-          <Form.Control type="text" placeholder="id 입력" {...register("userId", {required: "아이디를 입력해주세요"})} />
-        </Form.Group>
-        {errors.userId && <div className='error-message'>{errors.userId.message}</div>}
-        <br />
-        
-        <Form.Group>
-          <Form.Label>닉네임</Form.Label>
-          <Form.Control type="text" placeholder="닉네임 입력" 
-          {...register("nickname", {required: "닉네임을 입력해주세요."})} />
-        </Form.Group>
-        {errors.nickname && <div className="error-message">{errors.nickname.message}</div>}
-        <br />
+    <div>
+      <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100">
+        <div className="text-center mb-4">
+          <img src={logo1} alt="BalGoorm Logo" className="logo-img" />
+          <h1 className="mt-2 logo-text">BalGoorm</h1>
+        </div>
 
-        <Form.Group>
-          <Form.Label>이메일</Form.Label>
-          <Form.Control type="text" placeholder="이메일 입력" {
-            ...register("email", {
-              required: "이메일을 입력해주세요.", 
-              pattern: {
-                value: /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/i,
-                message: '이메일이 형식에 맞지 않습니다'
-              }})} />
-        </Form.Group>
-        {errors.email && <div className="error-message">{errors.email.message}</div>}
-        <br />
+        <Form onSubmit={handleSubmit(submitForm)} className="w-100 signup-form">
+          <Form.Group>
+            <Form.Label>아이디</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="id 입력"
+              {...register("userId", { required: "아이디를 입력해주세요" })}
+            />
+          </Form.Group>
+          {errors.userId && (
+            <div className="error-message">{errors.userId.message}</div>
+          )}
+          <br />
 
-        <Form.Group>
-          <Form.Label>비밀번호</Form.Label>
-          <Form.Control type="password" placeholder="비밀번호 입력" {...register("password", {required: "비밀번호를 입력해주세요."})}/>
-        </Form.Group>
-        {errors.password && <div className="error-message">{errors.password.message}</div>}
-        <br />
+          <Form.Group>
+            <Form.Label>닉네임</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="닉네임 입력"
+              {...register("nickname", { required: "닉네임을 입력해주세요." })}
+            />
+          </Form.Group>
+          {errors.nickname && (
+            <div className="error-message">{errors.nickname.message}</div>
+          )}
+          <br />
 
-        <Form.Group controlId="password">
-          <Form.Label>비밀번호 확인</Form.Label>
-          <Form.Control type="password" placeholder="비밀번호 확인" {
-            ...register("passwordConfirm", {
-              required: "비밀번호를 입력해주세요.", 
-              validate: (value) => watch('password') === value || '비밀번호가 일치하지 않습니다',
-              })}/>
-        </Form.Group>
+          <Form.Group>
+            <Form.Label>이메일</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="이메일 입력"
+              {...register("email", {
+                required: "이메일을 입력해주세요.",
+                pattern: {
+                  value: /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/i,
+                  message: "이메일이 형식에 맞지 않습니다",
+                },
+              })}
+            />
+          </Form.Group>
+          {errors.email && (
+            <div className="error-message">{errors.email.message}</div>
+          )}
+          <br />
 
-        <Button variant="primary" type="submit" className="w-100 mt-4">
-          회원가입
-        </Button>
-      </Form>
-    </Container>
-  </div>
+          <Form.Group>
+            <Form.Label>비밀번호</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="비밀번호 입력"
+              {...register("password", {
+                required: "비밀번호를 입력해주세요.",
+              })}
+            />
+          </Form.Group>
+          {errors.password && (
+            <div className="error-message">{errors.password.message}</div>
+          )}
+          <br />
+
+          <Form.Group controlId="password">
+            <Form.Label>비밀번호 확인</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="비밀번호 확인"
+              {...register("passwordConfirm", {
+                required: "비밀번호를 입력해주세요.",
+                validate: (value) =>
+                  watch("password") === value || "비밀번호가 일치하지 않습니다",
+              })}
+            />
+          </Form.Group>
+
+          <Button variant="primary" type="submit" className="w-100 mt-4">
+            회원가입
+          </Button>
+        </Form>
+      </Container>
+    </div>
   );
 }
 
